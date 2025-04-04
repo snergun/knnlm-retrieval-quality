@@ -73,4 +73,48 @@ The following NEW packages will be INSTALLED:
 Downloading and Extracting Packages: ...working... done
 Preparing transaction: ...working... done
 Verifying transaction: ...working... done
-Executing transaction: ...working... 
+Executing transaction: ...working... By downloading and using the CUDA Toolkit conda packages, you accept the terms and conditions of the CUDA End User License Agreement (EULA): https://docs.nvidia.com/cuda/eula/index.html
+
+done
+Obtaining file:///work/hdd/bcyi/eergun/knnlm-retrieval-quality
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): still running...
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting cffi (from fairseq==0.9.0)
+  Downloading cffi-1.17.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting cython (from fairseq==0.9.0)
+  Using cached Cython-3.0.12-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.3 kB)
+Requirement already satisfied: numpy in /scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages (from fairseq==0.9.0) (1.24.4)
+Collecting regex (from fairseq==0.9.0)
+  Downloading regex-2024.11.6-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (40 kB)
+Collecting sacrebleu (from fairseq==0.9.0)
+  Downloading sacrebleu-2.5.1-py3-none-any.whl.metadata (51 kB)
+Requirement already satisfied: torch in /scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages (from fairseq==0.9.0) (1.10.1)
+Collecting tqdm (from fairseq==0.9.0)
+  Downloading tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+Collecting pycparser (from cffi->fairseq==0.9.0)
+  Downloading pycparser-2.22-py3-none-any.whl.metadata (943 bytes)
+Collecting portalocker (from sacrebleu->fairseq==0.9.0)
+  Downloading portalocker-3.0.0-py3-none-any.whl.metadata (8.5 kB)
+Collecting tabulate>=0.8.9 (from sacrebleu->fairseq==0.9.0)
+  Downloading tabulate-0.9.0-py3-none-any.whl.metadata (34 kB)
+Collecting colorama (from sacrebleu->fairseq==0.9.0)
+  Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Collecting lxml (from sacrebleu->fairseq==0.9.0)
+  Downloading lxml-5.3.1-cp38-cp38-manylinux_2_28_x86_64.whl.metadata (3.5 kB)
+Requirement already satisfied: typing_extensions in /scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages (from torch->fairseq==0.9.0) (4.12.2)
+Downloading cffi-1.17.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (446 kB)
+Using cached Cython-3.0.12-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.6 MB)
+Downloading regex-2024.11.6-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (785 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 785.1/785.1 kB 18.0 MB/s eta 0:00:00
+Downloading sacrebleu-2.5.1-py3-none-any.whl (104 kB)
+Downloading tqdm-4.67.1-py3-none-any.whl (78 kB)
+Downloading tabulate-0.9.0-py3-none-any.whl (35 kB)
+Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Downloading lxml-5.3.1-cp38-cp38-manylinux_2_28_x86_64.whl (5.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.1/5.1 MB 92.9 MB/s eta 0:00:00
+Downloading portalocker-3.0.0-py3-none-any.whl (19 kB)
+Downloading pycparser-2.22-py3-none-any.whl (117 kB)
+Installing collected packages: tqdm, tabulate, regex, pycparser, portalocker, lxml, cython, colorama, sacrebleu, cffi, fairseq
+  Running setup.py develop for fairseq
+Successfully installed cffi-1.17.1 colorama-0.4.6 cython-3.0.12 fairseq lxml-5.3.1 portalocker-3.0.0 pycparser-2.22 regex-2024.11.6 sacrebleu-2.5.1 tabulate-0.9.0 tqdm-4.67.1
