@@ -1,0 +1,16 @@
+/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/torch/package/_directory_reader.py:17: UserWarning: Failed to initialize NumPy: numpy.core.multiarray failed to import (Triggered internally at  ../torch/csrc/utils/tensor_numpy.cpp:68.)
+  _dtype_to_storage = {data_type(0).dtype: data_type for data_type in _storages}
+Traceback (most recent call last):
+  File "preprocess.py", line 7, in <module>
+    from fairseq_cli.preprocess import cli_main
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq_cli/preprocess.py", line 18, in <module>
+    from fairseq import options, tasks, utils
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/__init__.py", line 9, in <module>
+    import fairseq.criterions  # noqa
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/criterions/__init__.py", line 10, in <module>
+    from fairseq.criterions.fairseq_criterion import FairseqCriterion
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/criterions/fairseq_criterion.py", line 10, in <module>
+    from fairseq import metrics, utils
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/utils.py", line 18, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'

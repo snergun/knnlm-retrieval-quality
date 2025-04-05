@@ -1,13 +1,14 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=64
+#SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
 #SBATCH --partition=gpuA40x4
 #SBATCH --gpus=1
-#SBATCH --time=4:00:00
-#SBATCH --job-name=log/knnlm_data_prep
+#SBATCH --time=1:00:00
+#SBATCH --job-name=knnlm_data_prep
 #SBATCH --output=log/knnlm_data_prep_%j.out
+#SBATCH --error=log/knnlm_data_prep_%j.err
 #SBATCH --account=bcyi-delta-gpu
 
 # Load modules and activate environment
@@ -17,11 +18,16 @@ source activate knnlm
 # Create directories
 mkdir -p data/wikitext-103
 
-# Download using Hugging Face datasets
-pip install datasets
+if [ -f "data/wikitext-103/wiki.train.tokens" ] && [ -f "data/wikitext-103/wiki.valid.tokens" ] && [ -f "data/wikitext-103/wiki.test.tokens" ]; then
+    echo "Dataset files already exist. Skipping download step."
+else
+    echo "Dataset files not found. Downloading wikitext-103..."
+    
+    # Download using Hugging Face datasets
+    pip install datasets
 
-# Download and save wikitext-103
-python -c "
+    # Download and save wikitext-103
+    python -c "
 from datasets import load_dataset
 import os
 
@@ -46,7 +52,7 @@ with open('data/wikitext-103/wiki.test.tokens', 'w', encoding='utf-8') as f:
 
 print('Wikitext-103 dataset has been successfully saved.')
 "
-
+fi
 # Preprocess the data
 python preprocess.py --only-source \
     --trainpref data/wikitext-103/wiki.train.tokens \
