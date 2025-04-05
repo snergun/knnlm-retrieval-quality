@@ -6,8 +6,8 @@
 #SBATCH --partition=gpuA40x4
 #SBATCH --gpus=1
 #SBATCH --time=4:00:00
-#SBATCH --job-name=knnlm_data_prep
-#SBATCH --output=knnlm_data_prep_%j.out
+#SBATCH --job-name=log/knnlm_data_prep
+#SBATCH --output=log/knnlm_data_prep_%j.out
 #SBATCH --account=bcyi-delta-gpu
 
 # Load modules and activate environment

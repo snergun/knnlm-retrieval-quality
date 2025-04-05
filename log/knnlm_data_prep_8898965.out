@@ -91,3 +91,60 @@ Downloading yarl-1.15.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 Downloading propcache-0.2.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (213 kB)
 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
 Installing collected packages: pytz, xxhash, urllib3, tzdata, six, pyyaml, pyarrow, propcache, multidict, idna, fsspec, frozenlist, filelock, dill, charset-normalizer, certifi, attrs, async-timeout, aiohappyeyeballs, yarl, requests, python-dateutil, multiprocess, aiosignal, pandas, huggingface-hub, aiohttp, datasets
+Successfully installed aiohappyeyeballs-2.4.4 aiohttp-3.10.11 aiosignal-1.3.1 async-timeout-5.0.1 attrs-25.3.0 certifi-2025.1.31 charset-normalizer-3.4.1 datasets-3.1.0 dill-0.3.8 filelock-3.16.1 frozenlist-1.5.0 fsspec-2024.9.0 huggingface-hub-0.30.1 idna-3.10 multidict-6.1.0 multiprocess-0.70.16 pandas-2.0.3 propcache-0.2.0 pyarrow-17.0.0 python-dateutil-2.9.0.post0 pytz-2025.2 pyyaml-6.0.2 requests-2.32.3 six-1.17.0 tzdata-2025.2 urllib3-2.2.3 xxhash-3.5.0 yarl-1.15.2
+
+Generating test split:   0%|          | 0/4358 [00:00<?, ? examples/s]
+Generating test split:  23%|██▎       | 1000/4358 [00:00<00:00, 9324.65 examples/s]
+Generating test split: 100%|██████████| 4358/4358 [00:00<00:00, 38674.27 examples/s]
+
+Generating train split:   0%|          | 0/1801350 [00:00<?, ? examples/s]
+Generating train split:   4%|▍         | 70000/1801350 [00:00<00:04, 381591.27 examples/s]
+Generating train split:   9%|▉         | 171000/1801350 [00:00<00:02, 655307.37 examples/s]
+Generating train split:  15%|█▌        | 271000/1801350 [00:00<00:01, 785934.10 examples/s]
+Generating train split:  20%|██        | 368000/1801350 [00:00<00:01, 845044.79 examples/s]
+Generating train split:  26%|██▌       | 471000/1801350 [00:00<00:01, 887263.76 examples/s]
+Generating train split:  32%|███▏      | 576000/1801350 [00:00<00:01, 920039.93 examples/s]
+Generating train split:  38%|███▊      | 684000/1801350 [00:00<00:01, 954923.22 examples/s]
+Generating train split:  46%|████▌     | 829000/1801350 [00:00<00:01, 954344.03 examples/s]
+Generating train split:  52%|█████▏    | 929675/1801350 [00:01<00:00, 960618.25 examples/s]
+Generating train split:  57%|█████▋    | 1027675/1801350 [00:01<00:00, 962270.90 examples/s]
+Generating train split:  63%|██████▎   | 1129675/1801350 [00:01<00:00, 977347.23 examples/s]
+Generating train split:  68%|██████▊   | 1229675/1801350 [00:01<00:00, 972961.69 examples/s]
+Generating train split:  74%|███████▍  | 1336675/1801350 [00:01<00:00, 979356.02 examples/s]
+Generating train split:  80%|███████▉  | 1437675/1801350 [00:01<00:00, 986113.79 examples/s]
+Generating train split:  88%|████████▊ | 1589675/1801350 [00:01<00:00, 993265.76 examples/s]
+Generating train split:  95%|█████████▍| 1705675/1801350 [00:01<00:00, 865340.62 examples/s]
+Generating train split: 100%|██████████| 1801350/1801350 [00:02<00:00, 795877.18 examples/s]
+Generating train split: 100%|██████████| 1801350/1801350 [00:02<00:00, 879270.49 examples/s]
+
+Generating validation split:   0%|          | 0/3760 [00:00<?, ? examples/s]
+Generating validation split: 100%|██████████| 3760/3760 [00:00<00:00, 31829.03 examples/s]
+Generating validation split: 100%|██████████| 3760/3760 [00:00<00:00, 31341.77 examples/s]
+Wikitext-103 dataset has been successfully saved.
+Traceback (most recent call last):
+  File "preprocess.py", line 7, in <module>
+    from fairseq_cli.preprocess import cli_main
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq_cli/preprocess.py", line 18, in <module>
+    from fairseq import options, tasks, utils
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/__init__.py", line 9, in <module>
+    import fairseq.criterions  # noqa
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/criterions/__init__.py", line 10, in <module>
+    from fairseq.criterions.fairseq_criterion import FairseqCriterion
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/criterions/fairseq_criterion.py", line 10, in <module>
+    from fairseq import metrics, utils
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/utils.py", line 21, in <module>
+    from fairseq.modules import gelu, gelu_accurate
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/modules/__init__.py", line 9, in <module>
+    from .character_token_embedder import CharacterTokenEmbedder
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/modules/character_token_embedder.py", line 13, in <module>
+    from fairseq.data import Dictionary
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/data/__init__.py", line 20, in <module>
+    from .indexed_dataset import IndexedCachedDataset, IndexedDataset, IndexedRawTextDataset, MMapIndexedDataset
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/data/indexed_dataset.py", line 89, in <module>
+    6: np.float,
+  File "/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'float'.
+`np.float` was a deprecated alias for the builtin `float`. To avoid this error in existing code, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
