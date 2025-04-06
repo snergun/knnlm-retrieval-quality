@@ -1,0 +1,25 @@
+/var/spool/slurmd/job8899932/slurm_script: line 17: cd: /work/nvme/eergun/knnlm-retrieval-quality: No such file or directory
+2025-04-05 19:06:08 | INFO | fairseq_cli.eval_lm | Namespace(add_bos_token=False, all_gather_list_size=16384, bpe=None, context_window=1536, cpu=False, criterion='cross_entropy', data='data-bin/wikitext-103', dataset_impl=None, dstore_filename=None, dstore_fp16=True, dstore_mmap='datastore/wikitext-103/train/dstore', dstore_size=103225485, empty_cache_freq=0, faiss_metric_type='l2', force_anneal=None, fp16=True, fp16_init_scale=128, fp16_no_flatten_grads=False, fp16_scale_tolerance=0.0, fp16_scale_window=None, future_target=False, gen_subset='train', indexfile=None, k=1024, knn_keytype='last_ffn_input', knn_sim_func=None, knnlm=False, lm_eval=True, lmbda=0.0, log_format=None, log_interval=1000, lr_scheduler='fixed', lr_shrink=0.1, max_sentences=None, max_target_positions=None, max_tokens=3072, memory_efficient_fp16=False, min_loss_scale=0.0001, model_overrides="{'knn_keytype': 'last_ffn_input'}", momentum=0.99, move_dstore_to_mem=False, no_load_keys=False, no_min_context=False, no_progress_bar=False, num_shards=1, num_workers=1, optimizer='nag', output_dictionary_size=-1, output_word_probs=False, output_word_stats=False, past_target=False, path='adaptive_lm_wiki103.v2/model.pt', probe=8, quiet=False, remove_bpe=None, required_batch_size_multiple=8, results_path=None, sample_break_mode='none', save_knnlm_dstore=True, seed=1, self_target=False, shard_id=0, skip_invalid_size_inputs_valid_test=False, softmax_batch=1024, task='language_modeling', tensorboard_logdir='', threshold_loss_scale=None, tokenizer=None, tokens_per_sample=1536, truncate_sequence=False, user_dir=None, warmup_updates=0, weight_decay=0.0)
+2025-04-05 19:06:09 | INFO | fairseq.tasks.language_modeling | dictionary: 267744 types
+2025-04-05 19:06:09 | INFO | fairseq_cli.eval_lm | loading model(s) from adaptive_lm_wiki103.v2/model.pt
+2025-04-05 19:06:34 | INFO | fairseq.tasks.language_modeling | dictionary: 267744 types
+2025-04-05 19:06:35 | INFO | fairseq.data.data_utils | loaded 2966379 examples from: data-bin/wikitext-103/train
+Traceback (most recent call last):
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/data/token_block_dataset.py", line 46, in __init__
+    from fairseq.data.token_block_utils_fast import (
+ModuleNotFoundError: No module named 'fairseq.data.token_block_utils_fast'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "eval_lm.py", line 11, in <module>
+    cli_main()
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq_cli/eval_lm.py", line 309, in cli_main
+    main(args)
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq_cli/eval_lm.py", line 90, in main
+    task.load_dataset(args.gen_subset)
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/tasks/language_modeling.py", line 201, in load_dataset
+    dataset = TokenBlockDataset(
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/fairseq/data/token_block_dataset.py", line 51, in __init__
+    raise ImportError(
+ImportError: Please build Cython components with: `pip install --editable .` or `python setup.py build_ext --inplace`

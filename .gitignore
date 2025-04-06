@@ -133,3 +133,8 @@ experimental/*
 
 # DATA
 data/*
+data-bin/*
+datastore/*
+
+# Adaptive Input Paper Checkpoint
+adaptive_lm_wiki103.v2/
