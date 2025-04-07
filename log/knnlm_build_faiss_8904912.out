@@ -1,0 +1,8 @@
+usage: build_dstore.py [-h] [--write-interval WRITE_INTERVAL]
+                       [--dstore_mmap DSTORE_MMAP] [--dstore_size DSTORE_SIZE]
+                       [--dimension DIMENSION] [--dstore_fp16] [--seed SEED]
+                       [--ncentroids NCENTROIDS] [--code_size CODE_SIZE]
+                       [--probe PROBE] [--faiss_index FAISS_INDEX]
+                       [--num_keys_to_add_at_a_time NUM_KEYS_TO_ADD_AT_A_TIME]
+                       [--starting_point STARTING_POINT]
+build_dstore.py: error: unrecognized arguments: --dstore-fp16

@@ -65,14 +65,14 @@ def argument_parser():
 
 def set_presets(args):
     if args.preset is None:
-        args.preset = 'ptb_valid'
+        args.preset = 'wiki_valid'
 
     if args.preset == 'wiki_valid':
         args.vocab = 'data-bin/wikitext-103/dict.txt'
-        args.dstore = '/iesl/local/adrozdov/knnlm_data'
+        args.dstore = 'datastore/wikitext-103/train'
         args.dstore_size = 103225485
-        args.eval_dstore = '/iesl/local/adrozdov/knnlm_data.valid'
-        args.eval_dstore_cache = '/iesl/local/adrozdov/knnlm_data.valid.cache'
+        args.eval_dstore = 'datastore/wikitext-103/valid'
+        args.eval_dstore_cache = 'datastore/wikitext-103/valid.cache'
         args.eval_dstore_size = 217646
 
     if args.preset == 'ptb_valid':
