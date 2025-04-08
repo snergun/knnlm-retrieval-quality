@@ -13,3 +13,4 @@ Running "module reset". Resetting modules to system default. The following $MODU
 2025-04-07 20:24:07 | INFO | fairseq.progress_bar | :   4999 / 33603 wps=12903
 2025-04-07 20:28:14 | INFO | fairseq.progress_bar | :   5999 / 33603 wps=12826
 2025-04-07 20:32:56 | INFO | fairseq.progress_bar | :   6999 / 33603 wps=12503
+2025-04-07 20:37:07 | INFO | fairseq.progress_bar | :   7999 / 33603 wps=12470

@@ -2,8 +2,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=64
-#SBATCH --mem=64G
-#SBATCH --partition=gpuA40x4
+#SBATCH --mem=128G
+#SBATCH --partition=cpu
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
 #SBATCH --time=24:00:00
@@ -25,4 +25,4 @@ python build_dstore.py \
     --dimension 1024 \
     --faiss_index $DSTORE_DIR/knn.index \
     --num_keys_to_add_at_a_time 500000 \
-    --starting_point 22000000 --dstore_fp16
+    --starting_point 0 
