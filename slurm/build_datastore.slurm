@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=32
-#SBATCH --mem=64G
-#SBATCH --partition=gpuA100x4
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=32G
+#SBATCH --partition=gpuA40x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
 #SBATCH --time=8:00:00
-#SBATCH --job-name=knnlm_build_datastore
+#SBATCH --job-name=build_datastore
 #SBATCH --error=log/knnlm_build_datastore_%j.err
 #SBATCH --output=log/knnlm_build_datastore_%j.out
 

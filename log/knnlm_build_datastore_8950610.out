@@ -1,0 +1,5 @@
+keytype being saved: last_ffn_input
+Saving fp32
+prob = (103225485, 1) float32
+keys = (103225485, 1024) float32
+vals = (103225485, 1) int64
