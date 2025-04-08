@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+  File "/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/datasets/__init__.py", line 17, in <module>
+    from .arrow_dataset import Dataset
+  File "/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/datasets/arrow_dataset.py", line 59, in <module>
+    import pandas as pd
+  File "/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/pandas/__init__.py", line 52, in <module>
+    from pandas.core.api import (
+  File "/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/pandas/core/api.py", line 15, in <module>
+    from pandas.core.arrays import Categorical
+  File "/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/pandas/core/arrays/__init__.py", line 7, in <module>
+    from pandas.core.arrays.categorical import Categorical
+  File "/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/pandas/core/arrays/categorical.py", line 57, in <module>
+    from pandas.core.indexers import check_array_indexer, deprecate_ndim_indexing
+ImportError: cannot import name 'deprecate_ndim_indexing' from 'pandas.core.indexers' (/scratch/bcyi/esenergun/knnlm/lib/python3.8/site-packages/pandas/core/indexers/__init__.py)
+/var/spool/slurmd/job8949161/slurm_script: line 54: syntax error near unexpected token `fi'
+/var/spool/slurmd/job8949161/slurm_script: line 54: `fi'

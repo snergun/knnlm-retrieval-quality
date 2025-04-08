@@ -3,18 +3,19 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=64G
-#SBATCH --partition=gpuA40x4
+#SBATCH --partition=gpuA100x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
 #SBATCH --time=8:00:00
 #SBATCH --job-name=knnlm_build_datastore
+#SBATCH --error=log/knnlm_build_datastore_%j.err
 #SBATCH --output=log/knnlm_build_datastore_%j.out
 
 # Load modules and activate environment
+module purge
+module reset
 module load anaconda3_gpu
 source activate knnlm
-
-cd /work/hdd/bcyi/$USER/knnlm-retrieval-quality
 
 # Create directories for datastores
 mkdir -p datastore/wikitext-103/train
@@ -32,4 +33,4 @@ python eval_lm.py data-bin/wikitext-103 \
     --context-window 1536 --tokens-per-sample 1536 \
     --dstore-mmap $DSTORE_DIR/dstore --knn-keytype 'last_ffn_input' \
     --dstore-size $DSTORE_SIZE --model-overrides "{'knn_keytype': 'last_ffn_input'}" \
-    --save-knnlm-dstore --fp16 --dstore-fp16
+    --save-knnlm-dstore --fp16

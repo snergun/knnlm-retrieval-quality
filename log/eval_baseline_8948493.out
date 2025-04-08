@@ -1,0 +1,3 @@
+Evaluating baseline model on validation set...
+Model path: checkpoints/wt103_checkpoint_best.pt
+/var/spool/slurmd/job8948493/slurm_script: line 21: python: command not found

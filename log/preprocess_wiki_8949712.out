@@ -1,0 +1,8 @@
+2025-04-07 19:15:43 | INFO | fairseq_cli.preprocess | Namespace(align_suffix=None, alignfile=None, all_gather_list_size=16384, bpe=None, cpu=False, criterion='cross_entropy', dataset_impl='mmap', destdir='data-bin/wikitext-103', empty_cache_freq=0, fp16=False, fp16_init_scale=128, fp16_no_flatten_grads=False, fp16_scale_tolerance=0.0, fp16_scale_window=None, joined_dictionary=False, log_format=None, log_interval=1000, lr_scheduler='fixed', memory_efficient_fp16=False, min_loss_scale=0.0001, no_progress_bar=False, nwordssrc=-1, nwordstgt=-1, only_source=True, optimizer='nag', padding_factor=8, seed=1, source_lang=None, srcdict=None, target_lang=None, task='translation', tensorboard_logdir='', testpref='data/wikitext-103/wiki.test.tokens', tgtdict=None, threshold_loss_scale=None, thresholdsrc=0, thresholdtgt=0, tokenizer=None, trainpref='data/wikitext-103/wiki.train.tokens', user_dir=None, validpref='data/wikitext-103/wiki.valid.tokens', workers=16)
+2025-04-07 19:15:54 | INFO | fairseq_cli.preprocess | [None] Dictionary: 267743 types
+2025-04-07 19:16:27 | INFO | fairseq_cli.preprocess | [None] data/wikitext-103/wiki.train.tokens: 1801350 sents, 103227021 tokens, 0.0% replaced by <unk>
+2025-04-07 19:16:27 | INFO | fairseq_cli.preprocess | [None] Dictionary: 267743 types
+2025-04-07 19:16:29 | INFO | fairseq_cli.preprocess | [None] data/wikitext-103/wiki.valid.tokens: 3760 sents, 217646 tokens, 0.0% replaced by <unk>
+2025-04-07 19:16:29 | INFO | fairseq_cli.preprocess | [None] Dictionary: 267743 types
+2025-04-07 19:16:32 | INFO | fairseq_cli.preprocess | [None] data/wikitext-103/wiki.test.tokens: 4358 sents, 245569 tokens, 0.0% replaced by <unk>
+2025-04-07 19:16:32 | INFO | fairseq_cli.preprocess | Wrote preprocessed data to data-bin/wikitext-103

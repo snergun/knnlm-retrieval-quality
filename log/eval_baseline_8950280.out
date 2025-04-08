@@ -1,0 +1,3 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+Evaluating baseline model on validation set...
+Model path: checkpoints/wt103_checkpoint_best.pt
