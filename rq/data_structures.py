@@ -3,7 +3,11 @@ import os
 import faiss
 import numpy as np
 import torch
+import time
 
+import shutil
+
+from utils import log_progress, copy_to_tmp
 
 class Dataset(object):
     def __init__(self, args):
@@ -11,10 +15,11 @@ class Dataset(object):
         path = args.eval_dstore
         dstore_size = args.eval_dstore_size
         # TODO: We should allow for more (or less) neighbors to be included.
-        self.query = np.memmap(f'{path}/dstore_keys.npy', dtype=np.float16, mode='r', shape=(dstore_size, 1024))
-        self.target = np.memmap(f'{path}/dstore_vals.npy', dtype=np.int32, mode='r', shape=(dstore_size, 1))
-        self.prob = np.memmap(f'{path}/dstore_prob.npy', dtype=np.float16, mode='r', shape=(dstore_size, 1))
-
+       # Copy data to /tmp for faster access
+        self.query = copy_to_tmp(f'{path}/dstore_keys.npy', dtype=np.float16, shape=(dstore_size, 1024))
+        self.target = copy_to_tmp(f'{path}/dstore_vals.npy', dtype=np.int32, shape=(dstore_size, 1))
+        self.prob = copy_to_tmp(f'{path}/dstore_prob.npy', dtype=np.float16, shape=(dstore_size, 1))
+        log_progress("Dataset loaded with data from /tmp")
         for k in ['query', 'target', 'prob']:
             v = getattr(self, k)
             new_v = np.ones(v.shape, dtype=v.dtype)
@@ -27,13 +32,14 @@ class Dataset(object):
         dstore_size = args.eval_dstore_size
 
         if not args.eval_external_knns:
-            self.dists = np.memmap(f'{path}/dstore_cache_dists.npy', dtype=np.float32, mode='r', shape=(dstore_size, 1024))
-            self.knns = np.memmap(f'{path}/dstore_cache_knns.npy', dtype=np.int32, mode='r', shape=(dstore_size, 1024))
+            self.dists = copy_to_tmp(f'{path}/dstore_cache_dists.npy', dtype=np.float32, shape=(dstore_size, 1024))
+            self.knns = copy_to_tmp(f'{path}/dstore_cache_knns.npy', dtype=np.int32, shape=(dstore_size, 1024))
         else:
             # TODO: We don't load approx. distances since we assume the neighbors were set without faiss.
             #self.dists = np.memmap(f'{path}/dstore_cache_dists.npy', dtype=np.float32, mode='r', shape=(dstore_size, 1024))
             self.dists = np.ones(dtype=np.float32, shape=(dstore_size, 1024))
-            self.knns = np.memmap(args.eval_external_knns, dtype=np.int32, mode='r', shape=(dstore_size, 1024))
+            self.knns = copy_to_tmp(args.eval_external_knns, dtype=np.int32, shape=(dstore_size, 1024))
+        log_progress("Cache loaded from /tmp")
 
     def load_exact_dists(self):
         args = self.args
@@ -44,7 +50,8 @@ class Dataset(object):
         else:
             filename = f'{args.eval_external_knns}.exact_dists.npy'
         assert os.path.exists(filename)
-        self.exact_dists = np.memmap(filename, dtype=np.float32, mode='r', shape=(dstore_size, 1024))
+        self.exact_dists = copy_to_tmp(filename, dtype=np.float32, shape=(dstore_size, 1024))
+        log_progress("Exact distances loaded from /tmp")
 
 
 class Dstore(object):
@@ -55,12 +62,42 @@ class Dstore(object):
         self.sim_func = 'do_not_recomp_l2'
         self.k = 1024
 
-        self.keys = np.memmap(f'{path}/dstore_keys.npy', dtype=np.float16, mode='r', shape=(dstore_size, 1024))
-        self.vals = np.memmap(f'{path}/dstore_vals.npy', dtype=np.int32, mode='r', shape=(dstore_size, 1))
+        # Copy data to /tmp for faster access
+        tmp_path = os.path.join('/tmp', os.path.basename(path))
+        os.makedirs(tmp_path, exist_ok=True)
+        
+        keys_path = f'{path}/dstore_keys.npy'
+        vals_path = f'{path}/dstore_vals.npy'
+        tmp_keys_path = os.path.join(tmp_path, 'dstore_keys.npy')
+        tmp_vals_path = os.path.join(tmp_path, 'dstore_vals.npy')
+        
+        if not os.path.exists(tmp_keys_path):
+            log_progress(f"Copying {keys_path} to {tmp_keys_path}")
+            shutil.copy2(keys_path, tmp_keys_path)
+        else:
+            log_progress(f"File already exists: {tmp_keys_path}")
+            
+        if not os.path.exists(tmp_vals_path):
+            log_progress(f"Copying {vals_path} to {tmp_vals_path}")
+            shutil.copy2(vals_path, tmp_vals_path)
+        else:
+            log_progress(f"File already exists: {tmp_vals_path}")
+
+        self.keys = np.memmap(tmp_keys_path, dtype=np.float16, mode='r', shape=(dstore_size, 1024))
+        self.vals = np.memmap(tmp_vals_path, dtype=np.int32, mode='r', shape=(dstore_size, 1))
 
         print('load index')
-        indexfile = args.dstore_knn_index
-        self.index = faiss.read_index(indexfile, faiss.IO_FLAG_ONDISK_SAME_DIR)
+        index_path = args.dstore_knn_index
+        tmp_index_path = os.path.join(tmp_path, os.path.basename(index_path))
+        
+        if not os.path.exists(tmp_index_path):
+            log_progress(f"Copying {index_path} to {tmp_index_path}")
+            shutil.copy2(index_path, tmp_index_path)
+        else:
+            log_progress(f"File already exists: {tmp_index_path}")
+        
+        import faiss
+        self.index = faiss.read_index(tmp_index_path, faiss.IO_FLAG_ONDISK_SAME_DIR)
 
         self.half = True
         self.metric_type = 'l2'

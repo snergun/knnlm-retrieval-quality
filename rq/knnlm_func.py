@@ -3,8 +3,9 @@ import numpy as np
 import torch
 import time 
 
-def log_progress(msg):
-    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+import shutil
+
+from utils import log_progress, copy_to_tmp
 
 def eval_ppl(p):
     return 2**(-p.mean()/np.log(2))

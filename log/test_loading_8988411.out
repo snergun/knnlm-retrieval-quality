@@ -1,0 +1,30 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+[16:42:25] Starting data loading test
+[16:42:25] Using device: cuda:0
+[16:42:25] Testing target loading
+[16:42:25] Target loaded in 0.01s
+[16:42:25] Target shape: (217646, 1), dtype: int32
+[16:42:25] Target sample: [    2     0    12     0 96574]
+[16:42:25] Testing probability loading
+[16:42:25] Probabilities loaded in 0.02s
+[16:42:25] Probabilities shape: (217646, 1), dtype: float16
+[16:42:25] Probabilities sample: [-0.       -1.8545    0.007812 -1.765    -0.007812]
+[16:42:25] Testing neighbors loading
+[16:42:25] Neighbors loaded in 0.00s
+[16:42:25] Neighbors shape: (217646, 1024), dtype: int32
+[16:42:25] Neighbors sample (first row, first 5 cols): [50162065 92816858 46652198 80240962 48038705]
+[16:42:25] Testing distances loading
+[16:42:25] Exact distances loaded in 0.02s
+[16:42:25] Distances shape: (217646, 1024), dtype: float32
+[16:42:25] Distances sample (first row, first 5 cols): [-69472728. -69712976. -67351448. -66089616. -70267576.]
+[16:42:25] Testing datastore values loading
+[16:42:25] Datastore values loaded in 0.00s
+[16:42:25] Datastore values shape: (103225485, 1), dtype: int32
+[16:42:25] Datastore values sample: [    2     0    12     0 52468]
+[16:42:25] Testing batch processing
+[16:42:26] Batch data transferred to GPU in 0.65s
+[16:42:26] Log softmax computation took 0.05s
+[16:57:51] Neighbor value retrieval took 924.59s
+[16:57:51] Mask creation took 0.16s
+[16:57:51] Logsumexp took 0.25s
+[16:57:51] All tests completed

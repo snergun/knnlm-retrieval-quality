@@ -1,0 +1,41 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.2 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/simple_knn_eval.py", line 2, in <module>
+    import torch
+  File "/sw/external/python/anaconda3_gpu/lib/python3.9/site-packages/torch/__init__.py", line 1417, in <module>
+    from .functional import *  # noqa: F403
+  File "/sw/external/python/anaconda3_gpu/lib/python3.9/site-packages/torch/functional.py", line 7, in <module>
+    import torch.nn.functional as F
+  File "/sw/external/python/anaconda3_gpu/lib/python3.9/site-packages/torch/nn/__init__.py", line 1, in <module>
+    from .modules import *  # noqa: F403
+  File "/sw/external/python/anaconda3_gpu/lib/python3.9/site-packages/torch/nn/modules/__init__.py", line 35, in <module>
+    from .transformer import TransformerEncoder, TransformerDecoder, \
+  File "/sw/external/python/anaconda3_gpu/lib/python3.9/site-packages/torch/nn/modules/transformer.py", line 20, in <module>
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+/sw/external/python/anaconda3_gpu/lib/python3.9/site-packages/torch/nn/modules/transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:84.)
+  device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+[16:29:47] Starting simplified kNN-LM evaluation
+[16:29:47] Using device: cuda:0
+[16:29:47] Loading vocabulary size information
+[16:29:47] Loading cached evaluation data
+[16:29:48] Loading nearest neighbors data
+[16:29:48] Loading exact distances
+[16:29:48] Exact distances loaded
+[16:29:48] Loading datastore values
+[16:29:48] Calculating kNN probabilities
+Processing batches:   0%|          | 0/213 [00:00<?, ?it/s]Processing batches:   0%|          | 0/213 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/simple_knn_eval.py", line 136, in <module>
+    main()
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/simple_knn_eval.py", line 80, in main
+    batch_target = torch.from_numpy(target[start_idx:end_idx]).to(device).long()
+RuntimeError: Numpy is not available

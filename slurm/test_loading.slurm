@@ -7,8 +7,8 @@
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
 #SBATCH --time=2:00:00
-#SBATCH --job-name=knnlm_eval_valid
-#SBATCH --output=log/knnlm_eval_valid_%j.out
+#SBATCH --job-name=test_loading
+#SBATCH --output=log/test_loading_%j.out
 
 # Load modules and activate environment
 unset PYTHONPATH
@@ -16,10 +16,5 @@ unset PYTHONHOME
 module --force purge
 module reset
 module load anaconda3_gpu
-source activate knnlm
 
-cd /work/hdd/bcyi/$USER/knnlm-retrieval-quality
-
-python rq/fast_evaluate.py \
-    --preset wiki_valid \
-    --exact
+python test_loading.py

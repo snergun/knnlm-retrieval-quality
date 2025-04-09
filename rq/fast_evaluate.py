@@ -13,9 +13,9 @@ import math
 import sys
 import time
 import argparse
+import shutil
 
-def log_progress(msg):
-    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+from utils import log_progress, copy_to_tmp
 
 log_progress("Starting imports")
 # Time individual imports
@@ -112,11 +112,27 @@ def save_knns(args, dataset, dstore):
     dists = np.concatenate(cache['dists'], 0)
     knns = np.concatenate(cache['knns'], 0)
 
-    dstore_dists = np.memmap(f'{args.eval_dstore_cache}/dstore_cache_dists.npy', dtype=np.float32, mode='w+', shape=dists.shape)
+    # Save to /tmp first
+    tmp_dists_path = os.path.join(tmp_cache_dir, 'dstore_cache_dists.npy')
+    tmp_knns_path = os.path.join(tmp_cache_dir, 'dstore_cache_knns.npy')
+    
+    dstore_dists = np.memmap(tmp_dists_path, dtype=np.float32, mode='w+', shape=dists.shape)
     dstore_dists[:] = dists
-    dstore_knns = np.memmap(f'{args.eval_dstore_cache}/dstore_cache_knns.npy', dtype=np.int32, mode='w+', shape=knns.shape)
+    dstore_knns = np.memmap(tmp_knns_path, dtype=np.int32, mode='w+', shape=knns.shape)
     dstore_knns[:] = knns
-
+    
+    # Then copy back to original location
+    orig_cache_dir = args.eval_dstore_cache
+    os.makedirs(orig_cache_dir, exist_ok=True)
+    
+    orig_dists_path = os.path.join(orig_cache_dir, 'dstore_cache_dists.npy')
+    orig_knns_path = os.path.join(orig_cache_dir, 'dstore_cache_knns.npy')
+    
+    log_progress(f"Copying {tmp_dists_path} to {orig_dists_path}")
+    shutil.copy2(tmp_dists_path, orig_dists_path)
+    
+    log_progress(f"Copying {tmp_knns_path} to {orig_knns_path}")
+    shutil.copy2(tmp_knns_path, orig_knns_path)
 
 def save_exact(args, dataset, dstore):
 
@@ -174,8 +190,21 @@ def save_exact(args, dataset, dstore):
         print(header)
         run_block(start_k, end_k)
 
-    dstore_exact_dists = np.memmap(f'{args.eval_dstore_cache}/dstore_cache_exact_dists.npy', dtype=np.float32, mode='w+', shape=scores.shape)
+    # Save to /tmp first
+    tmp_cache_dir = os.path.join('/tmp', os.path.basename(args.eval_dstore_cache))
+    os.makedirs(tmp_cache_dir, exist_ok=True)
+    tmp_exact_dists_path = os.path.join(tmp_cache_dir, 'dstore_cache_exact_dists.npy')
+    
+    dstore_exact_dists = np.memmap(tmp_exact_dists_path, dtype=np.float32, mode='w+', shape=scores.shape)
     dstore_exact_dists[:] = new_dist
+    
+    # Then copy back to original location
+    orig_cache_dir = args.eval_dstore_cache
+    os.makedirs(orig_cache_dir, exist_ok=True)
+    orig_exact_dists_path = os.path.join(orig_cache_dir, 'dstore_cache_exact_dists.npy')
+    
+    log_progress(f"Copying {tmp_exact_dists_path} to {orig_exact_dists_path}")
+    shutil.copy2(tmp_exact_dists_path, orig_exact_dists_path)
 
     time.sleep(1)
 
@@ -200,7 +229,7 @@ def main(args):
         print('done')
         sys.exit()
 
-    log_progress("Starting dstore load")
+    log_progress("Starting cache load")
     t0 = time.time()
     dataset.load_cache()
     log_progress(f"Cache loaded in {time.time() - t0:.2f}s")
@@ -219,16 +248,20 @@ def main(args):
     else:
         dists = -1 * dataset.dists
 
-    # Vocab.
+    # Vocab
     log_progress("Loading dictionary")
     t0 = time.time()
     vocab = Dictionary()
     vocab.add_from_file(args.vocab)
     vocab.finalize()
     log_progress(f"Dictionary loaded in {time.time() - t0:.2f}s")
-    # print('found {} tokens in vocab {}'.format(len(vocab), args.vocab))
-    log_progress('found {} tokens in vocab {}'.format(len(vocab), args.vocab))
-    # Context.
+    log_progress(f'found {len(vocab)} tokens in vocab {args.vocab}')
+    
+    # Check dtype of probabilities
+    log_progress(f"LM prob dtype: {dataset.prob.dtype}")
+    log_progress(f"LM prob min: {dataset.prob.min()}, max: {dataset.prob.max()}")
+    
+    # Context
     context = {}
     context['args'] = args
     context['vocab'] = vocab
@@ -238,7 +271,6 @@ def main(args):
 
     log_progress("Running knnlm_func.run_eval_ppl")
     knnlm_func.run_eval_ppl(context)
-
 
 if __name__ == '__main__':
     args = argument_parser().parse_args()

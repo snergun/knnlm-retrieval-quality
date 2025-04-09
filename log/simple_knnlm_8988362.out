@@ -1,0 +1,11 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+[16:36:54] Starting simplified kNN-LM evaluation
+[16:36:54] Using device: cuda:0
+[16:36:54] Loading vocabulary size information
+[16:36:54] Loading cached evaluation data
+[16:36:54] Loading nearest neighbors data
+[16:36:54] Loading exact distances
+[16:36:54] Exact distances loaded
+[16:36:54] Loading datastore values
+[16:36:54] Calculating kNN probabilities
+Processing batches:   0%|          | 0/213 [00:00<?, ?it/s]slurmstepd: error: *** JOB 8988362 ON gpub053 CANCELLED AT 2025-04-09T16:42:18 ***

@@ -8,3 +8,4 @@ Running "module reset". Resetting modules to system default. The following $MODU
 2025-04-09 12:07:36 | INFO | fairseq_cli.eval_lm | num. model params: 246933504
 Reading datastore took 6.290051698684692 s
 Keys are fp32 and vals are int64
+slurmstepd: error: *** JOB 8985037 ON gpub084 CANCELLED AT 2025-04-09T17:45:03 ***
