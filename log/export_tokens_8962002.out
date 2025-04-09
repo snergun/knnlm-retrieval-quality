@@ -1,0 +1,7 @@
+Loading fairseq data from data-bin/wikitext-103
+Exporting tokens to data/wikitext-103-preprocessed in torch format
+Dataset has 4358 examples
+Extracted 245569 tokens
+Saved tokens to data/wikitext-103-preprocessed/test_tokens.pt
+Saved sample of first 100 tokens to data/wikitext-103-preprocessed/test_sample.json
+Successfully exported 245569 tokens

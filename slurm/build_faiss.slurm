@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=64
-#SBATCH --mem=128G
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=64G
 #SBATCH --partition=cpu
-#SBATCH --account=bcyi-delta-gpu
-#SBATCH --gpus=1
+#SBATCH --account=bcyi-delta-cpu
 #SBATCH --time=24:00:00
 #SBATCH --job-name=knnlm_build_faiss
 #SBATCH --output=log/knnlm_build_faiss_%j.out
+#SBATCH --error=log/knnlm_build_faiss_%j.err
 
 # Load modules and activate environment
 module load anaconda3_gpu

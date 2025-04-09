@@ -1,0 +1,12 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+Starting imports...
+numpy import: 16.34s
+torch import: 223.71s
+tqdm import: 0.00s
+data_structures import: 1.26s
+vocab import: 0.06s
+knnlm_func import: 0.06s
+Traceback (most recent call last):
+  File "rq/fast_evaluate.py", line 41, in <module>
+    print(f"All imports completed in {time.time() - start_time:.2f}s")
+NameError: name 'start_time' is not defined

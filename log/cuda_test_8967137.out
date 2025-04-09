@@ -1,0 +1,88 @@
+[18:40:35] Script starting
+[18:40:35] Importing torch...
+[18:40:35] torch imported in 0.00s
+[18:40:35] CUDA is available. Device count: 1
+[18:40:35] Current device: 0
+[18:40:35] Device name: NVIDIA A40
+[18:40:35] CUDA version: 11.3
+[18:40:35] GPU Memory Information:
+[18:40:35] Total: 47.61 GB
+[18:40:35] Allocated: 0.00 GB
+[18:40:35] Cached: 0.00 GB
+[18:40:35] Starting Initial test test - Matrix size: 1000x1000, Iterations: 5
+[18:40:35] Running warmup operation...
+[18:40:39] Warmup complete
+[18:40:39] Iteration 1: Tensor allocation took 0.0103s
+[18:40:39] Iteration 1: Computation took 0.0002s
+[18:40:39] Iteration 1: Total time: 0.0105s
+[18:40:40] Iteration 2: Tensor allocation took 0.0115s
+[18:40:40] Iteration 2: Computation took 0.0001s
+[18:40:40] Iteration 2: Total time: 0.0116s
+[18:40:41] Iteration 3: Tensor allocation took 0.0113s
+[18:40:41] Iteration 3: Computation took 0.0001s
+[18:40:41] Iteration 3: Total time: 0.0114s
+[18:40:42] Iteration 4: Tensor allocation took 0.0115s
+[18:40:42] Iteration 4: Computation took 0.0001s
+[18:40:42] Iteration 4: Total time: 0.0116s
+[18:40:43] Iteration 5: Tensor allocation took 0.0106s
+[18:40:43] Iteration 5: Computation took 0.0001s
+[18:40:43] Iteration 5: Total time: 0.0107s
+[18:40:45] Test complete. Average time per iteration: 0.0112s
+[18:40:45] Starting Larger matrix test test - Matrix size: 2000x2000, Iterations: 3
+[18:40:45] Running warmup operation...
+[18:40:45] Warmup complete
+[18:40:45] Iteration 1: Tensor allocation took 0.0388s
+[18:40:45] Iteration 1: Computation took 0.0493s
+[18:40:45] Iteration 1: Total time: 0.0881s
+[18:40:46] Iteration 2: Tensor allocation took 0.0374s
+[18:40:46] Iteration 2: Computation took 0.0006s
+[18:40:46] Iteration 2: Total time: 0.0380s
+[18:40:47] Iteration 3: Tensor allocation took 0.0378s
+[18:40:47] Iteration 3: Computation took 0.0006s
+[18:40:47] Iteration 3: Total time: 0.0384s
+[18:40:48] Test complete. Average time per iteration: 0.0548s
+[18:40:48] Starting Multiple iterations test test - Matrix size: 500x500, Iterations: 10
+[18:40:48] Running warmup operation...
+[18:40:48] Warmup complete
+[18:40:48] Iteration 1: Tensor allocation took 0.0026s
+[18:40:48] Iteration 1: Computation took 0.0248s
+[18:40:48] Iteration 1: Total time: 0.0274s
+[18:40:49] Iteration 2: Tensor allocation took 0.0029s
+[18:40:49] Iteration 2: Computation took 0.0002s
+[18:40:49] Iteration 2: Total time: 0.0031s
+[18:40:50] Iteration 3: Tensor allocation took 0.0027s
+[18:40:50] Iteration 3: Computation took 0.0002s
+[18:40:50] Iteration 3: Total time: 0.0030s
+[18:40:51] Iteration 4: Tensor allocation took 0.0104s
+[18:40:51] Iteration 4: Computation took 0.0006s
+[18:40:51] Iteration 4: Total time: 0.0110s
+[18:40:52] Iteration 5: Tensor allocation took 0.0029s
+[18:40:52] Iteration 5: Computation took 0.0002s
+[18:40:52] Iteration 5: Total time: 0.0031s
+[18:40:53] Iteration 6: Tensor allocation took 0.0030s
+[18:40:53] Iteration 6: Computation took 0.0002s
+[18:40:53] Iteration 6: Total time: 0.0032s
+[18:40:54] Iteration 7: Tensor allocation took 0.0028s
+[18:40:54] Iteration 7: Computation took 0.0002s
+[18:40:54] Iteration 7: Total time: 0.0030s
+[18:40:55] Iteration 8: Tensor allocation took 0.0028s
+[18:40:55] Iteration 8: Computation took 0.0002s
+[18:40:55] Iteration 8: Total time: 0.0030s
+[18:40:56] Iteration 9: Tensor allocation took 0.0040s
+[18:40:56] Iteration 9: Computation took 0.0003s
+[18:40:56] Iteration 9: Total time: 0.0042s
+[18:40:57] Iteration 10: Tensor allocation took 0.0027s
+[18:40:57] Iteration 10: Computation took 0.0002s
+[18:40:57] Iteration 10: Total time: 0.0029s
+[18:40:58] Test complete. Average time per iteration: 0.0064s
+[18:40:58] Testing memory transfer speed...
+[18:40:58] Transfer test: 10MB...
+[18:40:58] CPU to GPU transfer: 0.0124s (807.37 MB/s)
+[18:40:58] GPU to CPU transfer: 0.0856s (116.76 MB/s)
+[18:40:58] Transfer test: 100MB...
+[18:40:58] CPU to GPU transfer: 0.1330s (751.72 MB/s)
+[18:40:58] GPU to CPU transfer: 0.0150s (6680.96 MB/s)
+[18:40:58] Transfer test: 500MB...
+[18:40:59] CPU to GPU transfer: 0.6572s (760.83 MB/s)
+[18:40:59] GPU to CPU transfer: 0.0774s (6456.29 MB/s)
+[18:40:59] All tests completed

@@ -6,23 +6,26 @@ Basic Instructions:
   3. Compute perplexity with exact distance. `python rq/fast_evaluate.py --preset wiki_valid --exact`
 
 """
-
-import argparse
 import collections
 import json
 import os
 import math
 import sys
 import time
+import argparse
 
+def log_progress(msg):
+    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+
+log_progress("Starting imports")
+# Time individual imports
 import numpy as np
 import torch
-
 from tqdm import tqdm
-
 from data_structures import Dataset, Dstore
 from vocab import Dictionary
 import knnlm_func
+log_progress("Imports completed")
 
 
 def argument_parser():
@@ -182,18 +185,25 @@ def save_exact(args, dataset, dstore):
 #
 
 def main(args):
-    print('load dataset')
+    log_progress("Starting dataset load")
+    t0 = time.time()
     dataset = Dataset(args)
-    print('load dstore')
+    log_progress(f"Dataset loaded in {time.time() - t0:.2f}s")
+
+    log_progress("Starting dstore load")
+    t0 = time.time()
     dstore = Dstore(args)
+    log_progress(f"Dstore loaded in {time.time() - t0:.2f}s")
 
     if args.save_knns:
         save_knns(args, dataset, dstore)
         print('done')
         sys.exit()
 
-    print('load cache')
+    log_progress("Starting dstore load")
+    t0 = time.time()
     dataset.load_cache()
+    log_progress(f"Cache loaded in {time.time() - t0:.2f}s")
 
     if args.save_exact:
         save_exact(args, dataset, dstore)
@@ -201,18 +211,23 @@ def main(args):
         sys.exit()
 
     if args.exact:
-        print('load exact')
+        log_progress("Loading exact distances")
+        t0 = time.time()
         dataset.load_exact_dists()
         dists = dataset.exact_dists
+        log_progress(f"Exact distances loaded in {time.time() - t0:.2f}s")
     else:
         dists = -1 * dataset.dists
 
     # Vocab.
+    log_progress("Loading dictionary")
+    t0 = time.time()
     vocab = Dictionary()
     vocab.add_from_file(args.vocab)
     vocab.finalize()
-    print('found {} tokens in vocab {}'.format(len(vocab), args.vocab))
-
+    log_progress(f"Dictionary loaded in {time.time() - t0:.2f}s")
+    # print('found {} tokens in vocab {}'.format(len(vocab), args.vocab))
+    log_progress('found {} tokens in vocab {}'.format(len(vocab), args.vocab))
     # Context.
     context = {}
     context['args'] = args
@@ -221,6 +236,7 @@ def main(args):
     context['dataset'] = dataset
     context['dists'] = dists
 
+    log_progress("Running knnlm_func.run_eval_ppl")
     knnlm_func.run_eval_ppl(context)
 
 
@@ -231,4 +247,7 @@ if __name__ == '__main__':
 
     with torch.no_grad():
         main(args)
+
+
+
 

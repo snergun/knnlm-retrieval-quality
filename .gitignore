@@ -135,6 +135,6 @@ experimental/*
 data/*
 data-bin/*
 datastore/*
-
+data_external/*
 # Adaptive Input Paper Checkpoint
 adaptive_lm_wiki103.v2/

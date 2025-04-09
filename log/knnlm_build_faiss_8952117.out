@@ -1,0 +1,216 @@
+Namespace(code_size=64, dimension=1024, dstore_fp16=False, dstore_mmap='datastore/wikitext-103/train/dstore', dstore_size=103225485, faiss_index='datastore/wikitext-103/train/knn.index', ncentroids=4096, num_keys_to_add_at_a_time=500000, probe=8, seed=1, starting_point=0, write_interval=1000000)
+Training Index
+Training took 23404.61449456215 s
+Writing index after training
+Writing index took 0.48066091537475586 s
+Adding Keys
+Added 1000000 tokens so far
+Writing Index 1000000
+Added 2000000 tokens so far
+Writing Index 2000000
+Added 3000000 tokens so far
+Writing Index 3000000
+Added 4000000 tokens so far
+Writing Index 4000000
+Added 5000000 tokens so far
+Writing Index 5000000
+Added 6000000 tokens so far
+Writing Index 6000000
+Added 7000000 tokens so far
+Writing Index 7000000
+Added 8000000 tokens so far
+Writing Index 8000000
+Added 9000000 tokens so far
+Writing Index 9000000
+Added 10000000 tokens so far
+Writing Index 10000000
+Added 11000000 tokens so far
+Writing Index 11000000
+Added 12000000 tokens so far
+Writing Index 12000000
+Added 13000000 tokens so far
+Writing Index 13000000
+Added 14000000 tokens so far
+Writing Index 14000000
+Added 15000000 tokens so far
+Writing Index 15000000
+Added 16000000 tokens so far
+Writing Index 16000000
+Added 17000000 tokens so far
+Writing Index 17000000
+Added 18000000 tokens so far
+Writing Index 18000000
+Added 19000000 tokens so far
+Writing Index 19000000
+Added 20000000 tokens so far
+Writing Index 20000000
+Added 21000000 tokens so far
+Writing Index 21000000
+Added 22000000 tokens so far
+Writing Index 22000000
+Added 23000000 tokens so far
+Writing Index 23000000
+Added 24000000 tokens so far
+Writing Index 24000000
+Added 25000000 tokens so far
+Writing Index 25000000
+Added 26000000 tokens so far
+Writing Index 26000000
+Added 27000000 tokens so far
+Writing Index 27000000
+Added 28000000 tokens so far
+Writing Index 28000000
+Added 29000000 tokens so far
+Writing Index 29000000
+Added 30000000 tokens so far
+Writing Index 30000000
+Added 31000000 tokens so far
+Writing Index 31000000
+Added 32000000 tokens so far
+Writing Index 32000000
+Added 33000000 tokens so far
+Writing Index 33000000
+Added 34000000 tokens so far
+Writing Index 34000000
+Added 35000000 tokens so far
+Writing Index 35000000
+Added 36000000 tokens so far
+Writing Index 36000000
+Added 37000000 tokens so far
+Writing Index 37000000
+Added 38000000 tokens so far
+Writing Index 38000000
+Added 39000000 tokens so far
+Writing Index 39000000
+Added 40000000 tokens so far
+Writing Index 40000000
+Added 41000000 tokens so far
+Writing Index 41000000
+Added 42000000 tokens so far
+Writing Index 42000000
+Added 43000000 tokens so far
+Writing Index 43000000
+Added 44000000 tokens so far
+Writing Index 44000000
+Added 45000000 tokens so far
+Writing Index 45000000
+Added 46000000 tokens so far
+Writing Index 46000000
+Added 47000000 tokens so far
+Writing Index 47000000
+Added 48000000 tokens so far
+Writing Index 48000000
+Added 49000000 tokens so far
+Writing Index 49000000
+Added 50000000 tokens so far
+Writing Index 50000000
+Added 51000000 tokens so far
+Writing Index 51000000
+Added 52000000 tokens so far
+Writing Index 52000000
+Added 53000000 tokens so far
+Writing Index 53000000
+Added 54000000 tokens so far
+Writing Index 54000000
+Added 55000000 tokens so far
+Writing Index 55000000
+Added 56000000 tokens so far
+Writing Index 56000000
+Added 57000000 tokens so far
+Writing Index 57000000
+Added 58000000 tokens so far
+Writing Index 58000000
+Added 59000000 tokens so far
+Writing Index 59000000
+Added 60000000 tokens so far
+Writing Index 60000000
+Added 61000000 tokens so far
+Writing Index 61000000
+Added 62000000 tokens so far
+Writing Index 62000000
+Added 63000000 tokens so far
+Writing Index 63000000
+Added 64000000 tokens so far
+Writing Index 64000000
+Added 65000000 tokens so far
+Writing Index 65000000
+Added 66000000 tokens so far
+Writing Index 66000000
+Added 67000000 tokens so far
+Writing Index 67000000
+Added 68000000 tokens so far
+Writing Index 68000000
+Added 69000000 tokens so far
+Writing Index 69000000
+Added 70000000 tokens so far
+Writing Index 70000000
+Added 71000000 tokens so far
+Writing Index 71000000
+Added 72000000 tokens so far
+Writing Index 72000000
+Added 73000000 tokens so far
+Writing Index 73000000
+Added 74000000 tokens so far
+Writing Index 74000000
+Added 75000000 tokens so far
+Writing Index 75000000
+Added 76000000 tokens so far
+Writing Index 76000000
+Added 77000000 tokens so far
+Writing Index 77000000
+Added 78000000 tokens so far
+Writing Index 78000000
+Added 79000000 tokens so far
+Writing Index 79000000
+Added 80000000 tokens so far
+Writing Index 80000000
+Added 81000000 tokens so far
+Writing Index 81000000
+Added 82000000 tokens so far
+Writing Index 82000000
+Added 83000000 tokens so far
+Writing Index 83000000
+Added 84000000 tokens so far
+Writing Index 84000000
+Added 85000000 tokens so far
+Writing Index 85000000
+Added 86000000 tokens so far
+Writing Index 86000000
+Added 87000000 tokens so far
+Writing Index 87000000
+Added 88000000 tokens so far
+Writing Index 88000000
+Added 89000000 tokens so far
+Writing Index 89000000
+Added 90000000 tokens so far
+Writing Index 90000000
+Added 91000000 tokens so far
+Writing Index 91000000
+Added 92000000 tokens so far
+Writing Index 92000000
+Added 93000000 tokens so far
+Writing Index 93000000
+Added 94000000 tokens so far
+Writing Index 94000000
+Added 95000000 tokens so far
+Writing Index 95000000
+Added 96000000 tokens so far
+Writing Index 96000000
+Added 97000000 tokens so far
+Writing Index 97000000
+Added 98000000 tokens so far
+Writing Index 98000000
+Added 99000000 tokens so far
+Writing Index 99000000
+Added 100000000 tokens so far
+Writing Index 100000000
+Added 101000000 tokens so far
+Writing Index 101000000
+Added 102000000 tokens so far
+Writing Index 102000000
+Added 103000000 tokens so far
+Writing Index 103000000
+Adding total 103500000 keys
+Adding took 29489.475501537323 s
+Writing Index
+Writing index took 9.583563804626465 s

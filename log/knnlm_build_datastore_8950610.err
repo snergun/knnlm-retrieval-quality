@@ -14,3 +14,30 @@ Running "module reset". Resetting modules to system default. The following $MODU
 2025-04-07 20:28:14 | INFO | fairseq.progress_bar | :   5999 / 33603 wps=12826
 2025-04-07 20:32:56 | INFO | fairseq.progress_bar | :   6999 / 33603 wps=12503
 2025-04-07 20:37:07 | INFO | fairseq.progress_bar | :   7999 / 33603 wps=12470
+2025-04-07 20:41:28 | INFO | fairseq.progress_bar | :   8999 / 33603 wps=12393
+2025-04-07 20:45:34 | INFO | fairseq.progress_bar | :   9999 / 33603 wps=12401
+2025-04-07 20:49:55 | INFO | fairseq.progress_bar | :  10999 / 33603 wps=12338
+2025-04-07 20:54:27 | INFO | fairseq.progress_bar | :  11999 / 33603 wps=12245
+2025-04-07 21:32:02 | INFO | fairseq.progress_bar | :  12999 / 33603 wps=7585
+2025-04-07 21:35:56 | INFO | fairseq.progress_bar | :  13999 / 33603 wps=7820
+2025-04-07 21:39:56 | INFO | fairseq.progress_bar | :  14999 / 33603 wps=8028
+2025-04-07 21:43:57 | INFO | fairseq.progress_bar | :  15999 / 33603 wps=8219
+2025-04-07 21:47:37 | INFO | fairseq.progress_bar | :  16999 / 33603 wps=8422
+2025-04-07 21:52:30 | INFO | fairseq.progress_bar | :  17999 / 33603 wps=8515
+2025-04-07 21:56:44 | INFO | fairseq.progress_bar | :  18999 / 33603 wps=8651
+2025-04-07 22:01:08 | INFO | fairseq.progress_bar | :  19999 / 33603 wps=8763
+2025-04-07 22:05:45 | INFO | fairseq.progress_bar | :  20999 / 33603 wps=8851
+2025-04-07 22:09:48 | INFO | fairseq.progress_bar | :  21999 / 33603 wps=8973
+2025-04-07 22:13:53 | INFO | fairseq.progress_bar | :  22999 / 33603 wps=9086
+2025-04-07 22:18:13 | INFO | fairseq.progress_bar | :  23999 / 33603 wps=9174
+2025-04-07 22:22:36 | INFO | fairseq.progress_bar | :  24999 / 33603 wps=9254
+2025-04-07 22:26:42 | INFO | fairseq.progress_bar | :  25999 / 33603 wps=9346
+2025-04-07 22:31:04 | INFO | fairseq.progress_bar | :  26999 / 33603 wps=9418
+2025-04-07 22:35:08 | INFO | fairseq.progress_bar | :  27999 / 33603 wps=9503
+2025-04-07 22:40:50 | INFO | fairseq.progress_bar | :  28999 / 33603 wps=9484
+2025-04-07 22:44:57 | INFO | fairseq.progress_bar | :  29999 / 33603 wps=9560
+2025-04-07 22:48:57 | INFO | fairseq.progress_bar | :  30999 / 33603 wps=9638
+2025-04-07 22:52:33 | INFO | fairseq.progress_bar | :  31999 / 33603 wps=9737
+2025-04-07 22:56:39 | INFO | fairseq.progress_bar | :  32999 / 33603 wps=9802
+2025-04-07 22:59:10 | INFO | fairseq_cli.eval_lm | Evaluated 103227021 tokens in 6489.2s (15907.59 tokens/s)
+2025-04-07 22:59:11 | INFO | fairseq_cli.eval_lm | Loss (base 2): 3.4952, Perplexity: 11.28

@@ -1,21 +1,26 @@
 from tqdm import tqdm
 import numpy as np
 import torch
+import time 
 
+def log_progress(msg):
+    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
 def eval_ppl(p):
     return 2**(-p.mean()/np.log(2))
 
 
-def get_knn_prob(dstore, target, dists, knns, cuda=False):
-    if cuda:
+def get_knn_prob(dstore, target, dists, knns):
+    if torch.cuda.is_available():
         device = torch.device('cuda:0')
     else:
         device = torch.device('cpu')
 
+    log_progress(f"Using {device}")
+    
     d = torch.from_numpy(dists).to(device).float()
     probs = torch.log_softmax(d, -1)
-
+    log_progress(f"kNN probs calculated")
     index_mask = torch.eq(torch.from_numpy(dstore.vals[knns]).to(device).long().squeeze(-1), torch.from_numpy(target).to(device).long()).float()
     index_mask[index_mask == 0] = -10000 # for stability
     index_mask[index_mask == 1] = 0
@@ -38,12 +43,14 @@ def run_eval_ppl(context):
     dists = context['dists']
 
     # LM perplexity.
-    print('get_knn_prob')
+    log_progress("get kNN probabilities")
     knn_prob = get_knn_prob(dstore, target, dists, knns).view(-1, 1)
+    log_progress("kNN probabilities calculated")
     lm_prob = torch.from_numpy(dataset.prob).float()
     ppl = eval_ppl(lm_prob)
 
     # kNN-LM perplexity.
+    log_progress("Evaluate coefficients")
     coeff_list = (np.arange(0, 100) / 100).tolist()
     new_ppl_list = []
     for coeff in tqdm(coeff_list, desc='coeff'):

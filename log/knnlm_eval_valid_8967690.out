@@ -1,0 +1,25 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+/sw/spack/deltas11-2023-03/apps/linux-rhel8-zen3/gcc-11.4.0/cuda-11.8.0-vfixfmc
+11.3
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2022 NVIDIA Corporation
+Built on Wed_Sep_21_10:33:58_PDT_2022
+Cuda compilation tools, release 11.8, V11.8.89
+Build cuda_11.8.r11.8/compiler.31833905_0
+[19:23:04] Starting script
+[19:23:05] numpy imported in 0.37s
+[19:23:08] torch imported in 3.10s
+[19:23:08] tqdm imported in 0.00s
+[19:23:09] data_structures imported in 0.97s
+[19:23:09] vocab imported in 0.04s
+[19:23:09] knnlm_func imported in 0.03s
+[19:23:09] Starting dataset load
+[19:23:11] Dataset loaded in 1.91s
+[19:23:11] Starting dstore load
+load index
+[19:23:17] Dstore loaded in 6.55s
+[19:23:17] Starting dstore load
+[19:23:17] Cache loaded in 0.11s
+[19:23:17] Loading exact distances
+[19:23:17] Exact distances loaded in 0.06s
+slurmstepd: error: *** JOB 8967690 ON gpub043 CANCELLED AT 2025-04-08T19:25:53 ***

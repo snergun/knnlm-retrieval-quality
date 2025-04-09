@@ -1,0 +1,52 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+/sw/spack/deltas11-2023-03/apps/linux-rhel8-zen3/gcc-11.4.0/cuda-11.8.0-vfixfmc
+11.3
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2022 NVIDIA Corporation
+Built on Wed_Sep_21_10:33:58_PDT_2022
+Cuda compilation tools, release 11.8, V11.8.89
+Build cuda_11.8.r11.8/compiler.31833905_0
+[19:53:35] Starting script
+[19:53:35] numpy imported in 0.16s
+[19:53:36] torch imported in 1.08s
+[19:53:36] tqdm imported in 0.00s
+[19:53:37] data_structures imported in 0.16s
+[19:53:37] vocab imported in 0.00s
+[19:53:37] knnlm_func imported in 0.02s
+[19:53:37] Starting dataset load
+[19:53:37] Dataset loaded in 0.69s
+[19:53:37] Starting dstore load
+load index
+[19:53:42] Dstore loaded in 4.73s
+[19:53:42] Starting dstore load
+[19:53:42] Cache loaded in 0.03s
+[19:53:42] Loading exact distances
+[19:53:42] Exact distances loaded in 0.02s
+[19:53:42] Loading dictionary
+[19:53:43] Dictionary loaded in 0.51s
+[19:53:43] found 267744 tokens in vocab data-bin/wikitext-103/dict.txt
+[19:53:43] Running knnlm_func.run_eval_ppl
+[19:53:43] get kNN probabilities
+[19:53:43] Using GPU
+[20:42:55] kNN probabilities calculated
+[20:42:57] Evaluate coefficients
+/work/hdd/bcyi/eergun/knnlm-retrieval-quality/rq/knnlm_func.py:20: UserWarning: The given NumPy array is not writeable, and PyTorch does not support non-writeable tensors. This means you can write to the underlying (supposedly non-writeable) NumPy array using the tensor. You may want to copy the array to protect its data or make it writeable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at  ../torch/csrc/utils/tensor_numpy.cpp:189.)
+  d = torch.from_numpy(dists).to(device).float()
+coeff:   0%|          | 0/100 [00:00<?, ?it/s]/work/hdd/bcyi/eergun/knnlm-retrieval-quality/rq/data_structures.py:72: RuntimeWarning: divide by zero encountered in log
+  coeffs[1] = np.log(coeff)
+coeff:   1%|          | 1/100 [00:01<02:42,  1.65s/it]coeff:   2%|▏         | 2/100 [00:01<01:20,  1.22it/s]coeff:   3%|▎         | 3/100 [00:02<00:53,  1.82it/s]coeff:   4%|▍         | 4/100 [00:02<00:40,  2.37it/s]coeff:   5%|▌         | 5/100 [00:02<00:33,  2.86it/s]coeff:   6%|▌         | 6/100 [00:02<00:28,  3.27it/s]coeff:   7%|▋         | 7/100 [00:03<00:25,  3.59it/s]coeff:   8%|▊         | 8/100 [00:03<00:23,  3.84it/s]coeff:   9%|▉         | 9/100 [00:03<00:22,  4.03it/s]coeff:  10%|█         | 10/100 [00:03<00:21,  4.17it/s]coeff:  11%|█         | 11/100 [00:03<00:20,  4.30it/s]coeff:  12%|█▏        | 12/100 [00:04<00:20,  4.35it/s]coeff:  13%|█▎        | 13/100 [00:04<00:19,  4.39it/s]coeff:  14%|█▍        | 14/100 [00:04<00:19,  4.41it/s]coeff:  15%|█▌        | 15/100 [00:04<00:19,  4.46it/s]coeff:  16%|█▌        | 16/100 [00:04<00:18,  4.48it/s]coeff:  17%|█▋        | 17/100 [00:05<00:18,  4.48it/s]coeff:  18%|█▊        | 18/100 [00:05<00:18,  4.48it/s]coeff:  19%|█▉        | 19/100 [00:05<00:18,  4.48it/s]coeff:  20%|██        | 20/100 [00:05<00:17,  4.45it/s]coeff:  21%|██        | 21/100 [00:06<00:17,  4.49it/s]coeff:  22%|██▏       | 22/100 [00:06<00:17,  4.50it/s]coeff:  23%|██▎       | 23/100 [00:06<00:17,  4.50it/s]coeff:  24%|██▍       | 24/100 [00:06<00:17,  4.46it/s]coeff:  25%|██▌       | 25/100 [00:06<00:16,  4.53it/s]coeff:  26%|██▌       | 26/100 [00:07<00:16,  4.52it/s]coeff:  27%|██▋       | 27/100 [00:07<00:16,  4.42it/s]coeff:  28%|██▊       | 28/100 [00:07<00:18,  3.95it/s]coeff:  88%|████████▊ | 88/100 [00:07<00:00, 90.31it/s]coeff: 100%|██████████| 100/100 [00:07<00:00, 12.67it/s]
+/work/hdd/bcyi/eergun/knnlm-retrieval-quality/rq/knnlm_func.py:82: RuntimeWarning: divide by zero encountered in log
+  coeffs[1] = np.log(coeff)
+ppl = 3.527, new_ppl = 2.872 (0.11)
+ppl = 3.527, new_ppl = 2.871 (0.12)
+ppl = 3.527, new_ppl = 2.871 (0.13)
+ppl = 3.527, new_ppl = 2.872 (0.14)
+ppl = 3.527, new_ppl = 2.874 (0.15)
+Traceback (most recent call last):
+  File "rq/fast_evaluate.py", line 266, in <module>
+  File "rq/fast_evaluate.py", line 257, in main
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/rq/knnlm_func.py", line 73, in run_eval_ppl
+    coeff_list = (np.arange(0, 100) / 100).tolist()
+  File "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/rq/knnlm_func.py", line 104, in dynamic_combine_knn_and_vocab_probs
+    bin_prob[mask] = combine_knn_and_vocab_probs(this_knn_prob, this_lm_prob, best_coeff)
+AssertionError

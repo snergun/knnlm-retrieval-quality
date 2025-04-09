@@ -1,0 +1,30 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+/sw/spack/deltas11-2023-03/apps/linux-rhel8-zen3/gcc-11.4.0/cuda-11.8.0-vfixfmc
+11.3
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2022 NVIDIA Corporation
+Built on Wed_Sep_21_10:33:58_PDT_2022
+Cuda compilation tools, release 11.8, V11.8.89
+Build cuda_11.8.r11.8/compiler.31833905_0
+[19:48:45] Starting script
+[19:48:45] numpy imported in 0.13s
+[19:48:46] torch imported in 1.19s
+[19:48:46] tqdm imported in 0.00s
+[19:48:46] data_structures imported in 0.03s
+[19:48:46] vocab imported in 0.00s
+[19:48:46] knnlm_func imported in 0.02s
+[19:48:46] Starting dataset load
+[19:48:47] Dataset loaded in 0.27s
+[19:48:47] Starting dstore load
+load index
+[19:48:51] Dstore loaded in 4.04s
+[19:48:51] Starting dstore load
+[19:48:51] Cache loaded in 0.12s
+[19:48:51] Loading exact distances
+[19:48:51] Exact distances loaded in 0.00s
+[19:48:51] Loading dictionary
+[19:48:51] Dictionary loaded in 0.49s
+[19:48:51] found 267744 tokens in vocab data-bin/wikitext-103/dict.txt
+[19:48:51] Running knnlm_func.run_eval_ppl
+[19:48:51] get kNN probabilities
+slurmstepd: error: *** JOB 8967960 ON gpub013 CANCELLED AT 2025-04-08T19:52:47 ***

@@ -1,0 +1,2 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
+rm: cannot remove 'import_timing_test.py': No such file or directory

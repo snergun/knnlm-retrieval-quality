@@ -3,3 +3,7 @@ Saving fp32
 prob = (103225485, 1) float32
 keys = (103225485, 1024) float32
 vals = (103225485, 1) int64
+Already done. Skipping.
+dstore_idx 103225485 final shape torch.Size([141, 1024])
+Keys (103225485, 1024) float32
+Vals (103225485, 1) int64

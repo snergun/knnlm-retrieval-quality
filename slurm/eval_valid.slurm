@@ -3,14 +3,16 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
-#SBATCH --partition=gpuA40x4
+#SBATCH --partition=gpuA100x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
-#SBATCH --time=4:00:00
+#SBATCH --time=3:00:00
 #SBATCH --job-name=knnlm_eval_valid
 #SBATCH --output=log/knnlm_eval_valid_%j.out
 
 # Load modules and activate environment
+module purge
+module reset
 module load anaconda3_gpu
 source activate knnlm
 
@@ -40,7 +42,7 @@ else
         --context-window 1536 --tokens-per-sample 1536 \
         --dstore-mmap $DSTORE_DIR/dstore --knn-keytype 'last_ffn_input' \
         --dstore-size $DSTORE_SIZE --model-overrides "{'knn_keytype': 'last_ffn_input'}" \
-        --save-knnlm-dstore --fp16 --dstore-fp16
+        --save-knnlm-dstore --fp16
 fi
 
 # Step 1: Save the nearest neighbors (cache the retrieval)
