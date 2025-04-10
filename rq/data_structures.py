@@ -1,6 +1,6 @@
 import os
 
-import faiss
+# import faiss
 import numpy as np
 import torch
 import time
@@ -15,10 +15,11 @@ class Dataset(object):
         path = args.eval_dstore
         dstore_size = args.eval_dstore_size
         # TODO: We should allow for more (or less) neighbors to be included.
-       # Copy data to /tmp for faster access
-        self.query = copy_to_tmp(f'{path}/dstore_keys.npy', dtype=np.float16, shape=(dstore_size, 1024))
+        # Copy data to /tmp for faster access
+        self.query = copy_to_tmp(f'{path}/dstore_keys.npy', dtype=np.float32, shape=(dstore_size, 1024))
         self.target = copy_to_tmp(f'{path}/dstore_vals.npy', dtype=np.int32, shape=(dstore_size, 1))
-        self.prob = copy_to_tmp(f'{path}/dstore_prob.npy', dtype=np.float16, shape=(dstore_size, 1))
+        #This needs to be loaded float32 if dstore is float32
+        self.prob = copy_to_tmp(f'{path}/dstore_prob.npy', dtype=np.float32, shape=(dstore_size, 1))
         log_progress("Dataset loaded with data from /tmp")
         for k in ['query', 'target', 'prob']:
             v = getattr(self, k)
@@ -70,20 +71,25 @@ class Dstore(object):
         vals_path = f'{path}/dstore_vals.npy'
         tmp_keys_path = os.path.join(tmp_path, 'dstore_keys.npy')
         tmp_vals_path = os.path.join(tmp_path, 'dstore_vals.npy')
-        
-        if not os.path.exists(tmp_keys_path):
-            log_progress(f"Copying {keys_path} to {tmp_keys_path}")
-            shutil.copy2(keys_path, tmp_keys_path)
-        else:
-            log_progress(f"File already exists: {tmp_keys_path}")
+        if not args.from_cache:
+            #Don't need to load keys if evaluating from cache
+            if not os.path.exists(tmp_keys_path):
+                log_progress(f"Copying {keys_path} to {tmp_keys_path}")
+                shutil.copy2(keys_path, tmp_keys_path)
+            else:
+                log_progress(f"File already exists: {tmp_keys_path}")
             
         if not os.path.exists(tmp_vals_path):
             log_progress(f"Copying {vals_path} to {tmp_vals_path}")
             shutil.copy2(vals_path, tmp_vals_path)
         else:
             log_progress(f"File already exists: {tmp_vals_path}")
-
-        self.keys = np.memmap(tmp_keys_path, dtype=np.float16, mode='r', shape=(dstore_size, 1024))
+        #Don't use tmp for datastore keys if not needed.
+        if args.from_cache:
+            self.keys = np.memmap(keys_path, dtype=np.float32, mode='r', shape=(dstore_size, 1024))
+        else:
+            #Keys will be loaded from tmp if we need them
+            self.keys = np.memmap(tmp_keys_path, dtype=np.float32, mode='r', shape=(dstore_size, 1024))
         self.vals = np.memmap(tmp_vals_path, dtype=np.int32, mode='r', shape=(dstore_size, 1))
 
         print('load index')
@@ -95,10 +101,13 @@ class Dstore(object):
             shutil.copy2(index_path, tmp_index_path)
         else:
             log_progress(f"File already exists: {tmp_index_path}")
-        
-        import faiss
-        self.index = faiss.read_index(tmp_index_path, faiss.IO_FLAG_ONDISK_SAME_DIR)
-
+        #Comment this out to run with anaconda3_cpu, if index is not needed
+        if not args.from_cache:
+            #Load index if not evaluating from cache
+            import faiss
+            self.index = faiss.read_index(tmp_index_path, faiss.IO_FLAG_ONDISK_SAME_DIR)
+        else:
+            self.index = None
         self.half = True
         self.metric_type = 'l2'
 

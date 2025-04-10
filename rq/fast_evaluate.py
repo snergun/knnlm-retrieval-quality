@@ -49,7 +49,10 @@ def argument_parser():
     parser.add_argument('--k', default=1024)
     parser.add_argument('--exact', action='store_true',
                         help='If set, then use the exact distances (these should be cached with --save-exact).')
-
+    parser.add_argument('--from_cache', action='store_true',
+                        help='Set if evaluating from cached neighbors, values and probs.')
+    parser.add_argument('--validation-split', action='store_true',
+                    help='If set, split validation data for two-stage parameter tuning.')
     # Commands.
     parser.add_argument('--save-knns', action='store_true')
     parser.add_argument('--save-exact', action='store_true')
@@ -77,6 +80,14 @@ def set_presets(args):
         args.eval_dstore = 'datastore/wikitext-103/valid'
         args.eval_dstore_cache = 'datastore/wikitext-103/valid.cache'
         args.eval_dstore_size = 217646
+
+    if args.preset == 'wiki_test':
+        args.vocab = 'data-bin/wikitext-103/dict.txt'
+        args.dstore = 'datastore/wikitext-103/train'
+        args.dstore_size = 103225485
+        args.eval_dstore = 'datastore/wikitext-103/test'
+        args.eval_dstore_cache = 'datastore/wikitext-103/test.cache'
+        args.eval_dstore_size = 245569
 
     if args.preset == 'ptb_valid':
         args.vocab = 'data-bin/ptb/dict.txt'
@@ -113,6 +124,7 @@ def save_knns(args, dataset, dstore):
     knns = np.concatenate(cache['knns'], 0)
 
     # Save to /tmp first
+    tmp_cache_dir = os.path.join('/tmp', os.path.basename(args.eval_dstore_cache))
     tmp_dists_path = os.path.join(tmp_cache_dir, 'dstore_cache_dists.npy')
     tmp_knns_path = os.path.join(tmp_cache_dir, 'dstore_cache_knns.npy')
     
@@ -225,8 +237,9 @@ def main(args):
     log_progress(f"Dstore loaded in {time.time() - t0:.2f}s")
 
     if args.save_knns:
+        log_progress("Finding and Saving Neighbors")
         save_knns(args, dataset, dstore)
-        print('done')
+        log_progress("Done")
         sys.exit()
 
     log_progress("Starting cache load")
@@ -235,8 +248,9 @@ def main(args):
     log_progress(f"Cache loaded in {time.time() - t0:.2f}s")
 
     if args.save_exact:
+        log_progress("Calculating and Saving Exact Distances")
         save_exact(args, dataset, dstore)
-        print('done')
+        log_progress("Done")
         sys.exit()
 
     if args.exact:

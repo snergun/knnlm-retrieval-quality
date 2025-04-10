@@ -3,10 +3,10 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
-#SBATCH --partition=gpuA100x4
+#SBATCH --partition=gpuA40x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
-#SBATCH --time=00:20:00
+#SBATCH --time=00:30:00
 #SBATCH --job-name=simple_knnlm
 #SBATCH --output=log/simple_knnlm_%j.out
 
@@ -19,4 +19,4 @@ module load anaconda3_gpu
 
 cd /work/hdd/bcyi/$USER/knnlm-retrieval-quality
 
-python simple_knn_eval.py
+python simple_knn_eval_with_bins.py

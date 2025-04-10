@@ -1,5 +1,0 @@
-Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
-Traceback (most recent call last):
-  File "import_timing_test.py", line 41, in <module>
-    from data_structures import Dataset, Dstore
-ModuleNotFoundError: No module named 'data_structures'

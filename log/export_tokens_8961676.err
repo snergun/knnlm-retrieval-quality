@@ -1,5 +1,0 @@
-Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: None
-Traceback (most recent call last):
-  File "my_scripts/export_tokens.py", line 6, in <module>
-    from fairseq.data.indexed_dataset import MMapIndexedDataset
-ModuleNotFoundError: No module named 'fairseq'

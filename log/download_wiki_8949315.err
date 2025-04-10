@@ -1,118 +1,0 @@
-Lmod has detected the following error: Cannot load module
-"anaconda3_gpu/23.9.0" because these module(s) are loaded:
-   anaconda3_cpu
-
-While processing the following module(s):
-    Module fullname       Module Filename
-    ---------------       ---------------
-    anaconda3_gpu/23.9.0  /sw/user/modules/anaconda3_gpu/23.9.0.lua
-
-/var/spool/slurmd/job8949315/slurm_script: line 16: cd: /work/nvme/eergun/knnlm-retrieval-quality: No such file or directory
-Downloading readme:   0%|          | 0.00/10.5k [00:00<?, ?B/s]Downloading readme: 100%|██████████| 10.5k/10.5k [00:00<00:00, 18.0MB/s]
-Downloading data files:   0%|          | 0/3 [00:00<?, ?it/s]
-Downloading data:   0%|          | 0.00/157M [00:00<?, ?B/s][A
-Downloading data:   5%|▌         | 8.38M/157M [00:00<00:01, 83.8MB/s][A
-Downloading data:  11%|█         | 17.0M/157M [00:00<00:01, 85.2MB/s][A
-Downloading data:  16%|█▌        | 25.5M/157M [00:00<00:02, 60.6MB/s][A
-Downloading data:  22%|██▏       | 34.7M/157M [00:00<00:01, 70.7MB/s][A
-Downloading data:  28%|██▊       | 43.3M/157M [00:00<00:01, 75.2MB/s][A
-Downloading data:  33%|███▎      | 52.5M/157M [00:00<00:01, 80.6MB/s][A
-Downloading data:  39%|███▉      | 61.8M/157M [00:00<00:01, 84.4MB/s][A
-Downloading data:  45%|████▌     | 70.8M/157M [00:00<00:01, 86.1MB/s][A
-Downloading data:  51%|█████     | 79.7M/157M [00:00<00:00, 86.6MB/s][A
-Downloading data:  56%|█████▋    | 88.5M/157M [00:01<00:00, 86.2MB/s][A
-Downloading data:  62%|██████▏   | 97.9M/157M [00:01<00:00, 88.4MB/s][A
-Downloading data:  68%|██████▊   | 107M/157M [00:01<00:00, 89.6MB/s] [A
-Downloading data:  74%|███████▍  | 116M/157M [00:01<00:00, 90.9MB/s][A
-Downloading data:  80%|████████  | 126M/157M [00:01<00:00, 90.2MB/s][A
-Downloading data:  86%|████████▌ | 135M/157M [00:01<00:00, 89.0MB/s][A
-Downloading data:  92%|█████████▏| 144M/157M [00:01<00:00, 90.7MB/s][A
-Downloading data:  98%|█████████▊| 153M/157M [00:01<00:00, 90.1MB/s][ADownloading data: 100%|██████████| 157M/157M [00:01<00:00, 85.2MB/s]
-
-Downloading data:   0%|          | 0.00/157M [00:00<?, ?B/s][A
-Downloading data:   5%|▌         | 8.55M/157M [00:00<00:01, 85.4MB/s][A
-Downloading data:  11%|█         | 17.7M/157M [00:00<00:01, 88.7MB/s][A
-Downloading data:  17%|█▋        | 26.5M/157M [00:00<00:01, 68.7MB/s][A
-Downloading data:  23%|██▎       | 35.8M/157M [00:00<00:01, 76.8MB/s][A
-Downloading data:  29%|██▉       | 45.2M/157M [00:00<00:01, 82.3MB/s][A
-Downloading data:  35%|███▍      | 54.3M/157M [00:00<00:01, 85.2MB/s][A
-Downloading data:  40%|████      | 63.1M/157M [00:00<00:01, 85.0MB/s][A
-Downloading data:  46%|████▌     | 71.9M/157M [00:00<00:00, 86.1MB/s][A
-Downloading data:  52%|█████▏    | 81.1M/157M [00:00<00:00, 87.7MB/s][A
-Downloading data:  57%|█████▋    | 90.3M/157M [00:01<00:00, 89.0MB/s][A
-Downloading data:  63%|██████▎   | 99.7M/157M [00:01<00:00, 90.7MB/s][A
-Downloading data:  69%|██████▉   | 109M/157M [00:01<00:00, 91.1MB/s] [A
-Downloading data:  75%|███████▌  | 118M/157M [00:01<00:00, 89.5MB/s][A
-Downloading data:  81%|████████  | 127M/157M [00:01<00:00, 90.8MB/s][A
-Downloading data:  87%|████████▋ | 137M/157M [00:01<00:00, 90.9MB/s][A
-Downloading data:  93%|█████████▎| 146M/157M [00:01<00:00, 91.7MB/s][A
-Downloading data:  99%|█████████▉| 156M/157M [00:01<00:00, 94.0MB/s][ADownloading data: 100%|██████████| 157M/157M [00:01<00:00, 88.1MB/s]
-
-Downloading data:   0%|          | 0.00/156M [00:00<?, ?B/s][A
-Downloading data:   5%|▌         | 8.39M/156M [00:00<00:01, 82.6MB/s][A
-Downloading data:  11%|█▏        | 17.6M/156M [00:00<00:01, 88.3MB/s][A
-Downloading data:  17%|█▋        | 26.4M/156M [00:00<00:02, 56.9MB/s][A
-Downloading data:  23%|██▎       | 35.4M/156M [00:00<00:01, 66.5MB/s][A
-Downloading data:  29%|██▊       | 44.6M/156M [00:00<00:01, 74.2MB/s][A
-Downloading data:  34%|███▍      | 53.6M/156M [00:00<00:01, 78.8MB/s][A
-Downloading data:  40%|████      | 62.8M/156M [00:00<00:01, 82.7MB/s][A
-Downloading data:  46%|████▌     | 71.7M/156M [00:00<00:00, 84.6MB/s][A
-Downloading data:  52%|█████▏    | 80.7M/156M [00:01<00:00, 86.1MB/s][A
-Downloading data:  58%|█████▊    | 90.1M/156M [00:01<00:00, 88.3MB/s][A
-Downloading data:  64%|██████▎   | 99.2M/156M [00:01<00:00, 89.0MB/s][A
-Downloading data:  69%|██████▉   | 108M/156M [00:01<00:00, 89.1MB/s] [A
-Downloading data:  75%|███████▌  | 117M/156M [00:01<00:00, 87.1MB/s][A
-Downloading data:  81%|████████  | 126M/156M [00:01<00:00, 84.5MB/s][A
-Downloading data:  87%|████████▋ | 136M/156M [00:01<00:00, 89.1MB/s][A
-Downloading data:  94%|█████████▍| 147M/156M [00:01<00:00, 94.0MB/s][ADownloading data: 100%|██████████| 156M/156M [00:01<00:00, 84.6MB/s]
-
-Downloading data:   0%|          | 0.00/156M [00:00<?, ?B/s][A
-Downloading data:   6%|▌         | 8.77M/156M [00:00<00:01, 87.7MB/s][A
-Downloading data:  12%|█▏        | 18.4M/156M [00:00<00:01, 92.8MB/s][A
-Downloading data:  18%|█▊        | 27.7M/156M [00:00<00:01, 65.2MB/s][A
-Downloading data:  24%|██▎       | 37.0M/156M [00:00<00:01, 74.1MB/s][A
-Downloading data:  30%|██▉       | 46.1M/156M [00:00<00:01, 78.4MB/s][A
-Downloading data:  36%|███▌      | 56.1M/156M [00:00<00:01, 84.8MB/s][A
-Downloading data:  42%|████▏     | 65.7M/156M [00:00<00:01, 88.2MB/s][A
-Downloading data:  48%|████▊     | 75.5M/156M [00:00<00:00, 90.5MB/s][A
-Downloading data:  55%|█████▍    | 85.2M/156M [00:00<00:00, 92.5MB/s][A
-Downloading data:  61%|██████    | 94.6M/156M [00:01<00:00, 92.8MB/s][A
-Downloading data:  67%|██████▋   | 104M/156M [00:01<00:00, 94.1MB/s] [A
-Downloading data:  73%|███████▎  | 114M/156M [00:01<00:00, 92.0MB/s][A
-Downloading data:  79%|███████▉  | 124M/156M [00:01<00:00, 93.7MB/s][A
-Downloading data:  85%|████████▌ | 133M/156M [00:01<00:00, 93.6MB/s][A
-Downloading data:  91%|█████████▏| 143M/156M [00:01<00:00, 93.3MB/s][A
-Downloading data:  99%|█████████▉| 155M/156M [00:01<00:00, 102MB/s] [ADownloading data: 100%|██████████| 156M/156M [00:01<00:00, 90.3MB/s]
-
-Downloading data:   0%|          | 0.00/6.36M [00:00<?, ?B/s][ADownloading data: 100%|██████████| 6.36M/6.36M [00:00<00:00, 89.4MB/s]
-
-Downloading data:   0%|          | 0.00/6.07M [00:00<?, ?B/s][ADownloading data: 100%|██████████| 6.07M/6.07M [00:00<00:00, 87.8MB/s]
-Downloading data files:  33%|███▎      | 1/3 [00:10<00:20, 10.36s/it]
-Downloading data:   0%|          | 0.00/657k [00:00<?, ?B/s][ADownloading data: 100%|██████████| 657k/657k [00:00<00:00, 50.0MB/s]
-
-Downloading data:   0%|          | 0.00/655k [00:00<?, ?B/s][ADownloading data: 100%|██████████| 655k/655k [00:00<00:00, 47.8MB/s]
-
-Downloading data:   0%|          | 0.00/657k [00:00<?, ?B/s][ADownloading data: 100%|██████████| 657k/657k [00:00<00:00, 49.0MB/s]
-
-Downloading data:   0%|          | 0.00/618k [00:00<?, ?B/s][ADownloading data: 100%|██████████| 618k/618k [00:00<00:00, 51.0MB/s]
-Downloading data files:  67%|██████▋   | 2/3 [00:12<00:05,  5.28s/it]
-Downloading data:   0%|          | 0.00/733k [00:00<?, ?B/s][ADownloading data: 100%|██████████| 733k/733k [00:00<00:00, 56.8MB/s]
-
-Downloading data:   0%|          | 0.00/722k [00:00<?, ?B/s][ADownloading data: 100%|██████████| 722k/722k [00:00<00:00, 53.0MB/s]
-
-Downloading data:   0%|          | 0.00/733k [00:00<?, ?B/s][ADownloading data: 100%|██████████| 733k/733k [00:00<00:00, 52.0MB/s]
-
-Downloading data:   0%|          | 0.00/685k [00:00<?, ?B/s][ADownloading data: 100%|██████████| 685k/685k [00:00<00:00, 50.0MB/s]
-Downloading data files: 100%|██████████| 3/3 [00:14<00:00,  3.77s/it]Downloading data files: 100%|██████████| 3/3 [00:14<00:00,  4.69s/it]
-Extracting data files:   0%|          | 0/3 [00:00<?, ?it/s]Extracting data files:  33%|███▎      | 1/3 [00:00<00:00,  9.23it/s]Extracting data files: 100%|██████████| 3/3 [00:00<00:00, 18.73it/s]
-Generating train split:   0%|          | 0/1801350 [00:00<?, ? examples/s]Generating train split:   1%|          | 10000/1801350 [00:00<00:19, 90134.57 examples/s]Generating train split:   4%|▍         | 70000/1801350 [00:00<00:11, 153255.97 examples/s]Generating train split:   9%|▉         | 170000/1801350 [00:00<00:04, 352209.56 examples/s]Generating train split:  15%|█▍        | 270000/1801350 [00:00<00:03, 502491.84 examples/s]Generating train split:  21%|██        | 370000/1801350 [00:00<00:02, 606453.30 examples/s]Generating train split:  26%|██▌       | 470000/1801350 [00:00<00:01, 678194.20 examples/s]Generating train split:  31%|███       | 560000/1801350 [00:01<00:01, 725265.28 examples/s]Generating train split:  37%|███▋      | 660000/1801350 [00:01<00:01, 786220.64 examples/s]Generating train split:  42%|████▏     | 760000/1801350 [00:01<00:01, 823097.44 examples/s]Generating train split:  47%|████▋     | 850000/1801350 [00:01<00:01, 833159.86 examples/s]Generating train split:  52%|█████▏    | 940675/1801350 [00:01<00:01, 817410.21 examples/s]Generating train split:  57%|█████▋    | 1030675/1801350 [00:01<00:00, 809983.73 examples/s]Generating train split:  63%|██████▎   | 1140675/1801350 [00:01<00:00, 843357.71 examples/s]Generating train split:  69%|██████▉   | 1240675/1801350 [00:01<00:00, 860319.51 examples/s]Generating train split:  74%|███████▍  | 1340675/1801350 [00:01<00:00, 859636.02 examples/s]Generating train split:  80%|███████▉  | 1440675/1801350 [00:02<00:00, 862330.08 examples/s]Generating train split:  86%|████████▌ | 1550675/1801350 [00:02<00:00, 887845.65 examples/s]Generating train split:  91%|█████████ | 1640675/1801350 [00:02<00:00, 871360.53 examples/s]Generating train split:  98%|█████████▊| 1770675/1801350 [00:02<00:00, 553375.43 examples/s]Generating train split: 1851350 examples [00:02, 584915.23 examples/s]                      Generating train split: 1951350 examples [00:02, 647673.45 examples/s]Generating train split: 2061350 examples [00:03, 716553.27 examples/s]Generating train split: 2161350 examples [00:03, 762338.31 examples/s]Generating train split: 2261350 examples [00:03, 787143.89 examples/s]Generating train split: 2361350 examples [00:03, 801050.05 examples/s]Generating train split: 2451350 examples [00:03, 809820.65 examples/s]Generating train split: 2571350 examples [00:03, 782535.01 examples/s]Generating train split: 2671350 examples [00:03, 818522.91 examples/s]Generating train split: 2802025 examples [00:03, 817603.61 examples/s]Generating train split: 2922025 examples [00:04, 883429.55 examples/s]Generating train split: 3042025 examples [00:04, 927596.45 examples/s]Generating train split: 3162025 examples [00:04, 980369.50 examples/s]Generating train split: 3282025 examples [00:04, 1025760.83 examples/s]Generating train split: 3432025 examples [00:04, 659166.16 examples/s] Generating train split: 3532025 examples [00:04, 706605.50 examples/s]Generating train split: 3622700 examples [00:05, 542202.40 examples/s]                                                                      Generating validation split:   0%|          | 0/3760 [00:00<?, ? examples/s]                                                                            Generating test split:   0%|          | 0/4358 [00:00<?, ? examples/s]                                                                      Traceback (most recent call last):
-  File "<string>", line 9, in <module>
-  File "/sw/external/python/anaconda3_cpu/lib/python3.9/site-packages/datasets/load.py", line 1797, in load_dataset
-    builder_instance.download_and_prepare(
-  File "/sw/external/python/anaconda3_cpu/lib/python3.9/site-packages/datasets/builder.py", line 890, in download_and_prepare
-    self._download_and_prepare(
-  File "/sw/external/python/anaconda3_cpu/lib/python3.9/site-packages/datasets/builder.py", line 1003, in _download_and_prepare
-    verify_splits(self.info.splits, split_dict)
-  File "/sw/external/python/anaconda3_cpu/lib/python3.9/site-packages/datasets/utils/info_utils.py", line 100, in verify_splits
-    raise NonMatchingSplitsSizesError(str(bad_splits))
-datasets.utils.info_utils.NonMatchingSplitsSizesError: [{'expected': SplitInfo(name='test', num_bytes=1305088, num_examples=4358, shard_lengths=None, dataset_name=None), 'recorded': SplitInfo(name='test', num_bytes=5176698, num_examples=17432, shard_lengths=None, dataset_name='parquet')}, {'expected': SplitInfo(name='train', num_bytes=546500949, num_examples=1801350, shard_lengths=None, dataset_name=None), 'recorded': SplitInfo(name='train', num_bytes=1113622699, num_examples=3676136, shard_lengths=[1650675, 1661350, 364111], dataset_name='parquet')}, {'expected': SplitInfo(name='validation', num_bytes=1159288, num_examples=3760, shard_lengths=None, dataset_name=None), 'recorded': SplitInfo(name='validation', num_bytes=4607450, num_examples=15040, shard_lengths=None, dataset_name='parquet')}]
