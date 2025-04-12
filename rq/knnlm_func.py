@@ -31,7 +31,7 @@ def get_knn_prob(dstore, target, dists, knns):
     return log_prob
 
 
-def run_eval_ppl(context):
+def run_eval_ppl(context,validation_split=False):
 
     # Local variables.
     dstore = context['dstore']
@@ -50,7 +50,7 @@ def run_eval_ppl(context):
     lm_prob = torch.from_numpy(dataset.prob).float()
     ppl = eval_ppl(lm_prob)
     # kNN-LM perplexity with validation split
-    if args.validation_split:
+    if validation_split:
         log_progress("Using split validation approach for coefficient tuning")
         
         # Split the data in half
@@ -148,6 +148,7 @@ def run_eval_ppl(context):
 
         # Print a window around the best perplexity.
         topk = 5
+        print("Static interpolation results:")
         for ix in sorted(np.argsort(new_ppl_list)[:topk]):
             new_ppl = new_ppl_list[ix]
             coeff = coeff_list[ix]
@@ -160,14 +161,15 @@ def run_eval_ppl(context):
         coeff_list = (np.arange(0, 100) / 100).tolist()
         bin_prob, bin_coeffs = dynamic_combine_knn_and_vocab_probs(knn_prob, lm_prob, bins, coeff_list)
         bin_ppl = eval_ppl(bin_prob)
+        print("Dynamic interpolation results:")
         print(f'bin_ppl = {bin_ppl:.3f}, coeffs [{number_of_bins}] = {bin_coeffs}')
 
 
 def combine_knn_and_vocab_probs(knn_p, vocab_p, coeff):
     combine_probs = torch.stack([vocab_p, knn_p], dim=0)
     coeffs = torch.ones_like(combine_probs)
-    coeffs[0] = np.log(1 - coeff)
-    coeffs[1] = np.log(coeff)
+    coeffs[0] = np.log(1 - coeff) if coeff < 1 else -1e13
+    coeffs[1] = np.log(coeff) if coeff > 0 else -1e13
     curr_prob = torch.logsumexp(combine_probs + coeffs, dim=0)
     return curr_prob
 

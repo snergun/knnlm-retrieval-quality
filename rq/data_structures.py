@@ -17,7 +17,7 @@ class Dataset(object):
         # TODO: We should allow for more (or less) neighbors to be included.
         # Copy data to /tmp for faster access
         self.query = copy_to_tmp(f'{path}/dstore_keys.npy', dtype=np.float32, shape=(dstore_size, 1024))
-        self.target = copy_to_tmp(f'{path}/dstore_vals.npy', dtype=np.int32, shape=(dstore_size, 1))
+        self.target = copy_to_tmp(f'{path}/dstore_vals.npy', dtype=np.int64, shape=(dstore_size, 1))
         #This needs to be loaded float32 if dstore is float32
         self.prob = copy_to_tmp(f'{path}/dstore_prob.npy', dtype=np.float32, shape=(dstore_size, 1))
         log_progress("Dataset loaded with data from /tmp")
@@ -90,7 +90,7 @@ class Dstore(object):
         else:
             #Keys will be loaded from tmp if we need them
             self.keys = np.memmap(tmp_keys_path, dtype=np.float32, mode='r', shape=(dstore_size, 1024))
-        self.vals = np.memmap(tmp_vals_path, dtype=np.int32, mode='r', shape=(dstore_size, 1))
+        self.vals = np.memmap(tmp_vals_path, dtype=np.int64, mode='r', shape=(dstore_size, 1))
 
         print('load index')
         index_path = args.dstore_knn_index
@@ -114,8 +114,8 @@ class Dstore(object):
     def combine_knn_and_vocab_probs(self, knn_p, vocab_p, coeff):
         combine_probs = torch.stack([vocab_p, knn_p], dim=0)
         coeffs = torch.ones_like(combine_probs)
-        coeffs[0] = np.log(1 - coeff)
-        coeffs[1] = np.log(coeff)
+        coeffs[0] = np.log(1 - coeff) if coeff < 1 else -1e13
+        coeffs[1] = np.log(coeff) if coeff > 0 else -1e13
         curr_prob = torch.logsumexp(combine_probs + coeffs, dim=0)
 
         return curr_prob

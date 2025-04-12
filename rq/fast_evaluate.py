@@ -284,7 +284,7 @@ def main(args):
     context['dists'] = dists
 
     log_progress("Running knnlm_func.run_eval_ppl")
-    knnlm_func.run_eval_ppl(context)
+    knnlm_func.run_eval_ppl(context,args.validation_split)
 
 if __name__ == '__main__':
     args = argument_parser().parse_args()

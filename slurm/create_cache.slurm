@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=16
-#SBATCH --mem=64G
+#SBATCH --mem=128G
 #SBATCH --partition=gpuA40x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
@@ -24,6 +24,7 @@ SPLIT=test  # Default to 'valid' if not set
 # Create directory for validation datastore
 mkdir -p datastore/wikitext-103/$SPLIT
 mkdir -p datastore/wikitext-103/$SPLIT.cache
+mkdir -p /tmp/$SPLIT.cache
 
 # Step 0: First build the datastore for split (if not already done)
 CHECKPOINT=adaptive_lm_wiki103.v2/model.pt
@@ -48,7 +49,7 @@ python eval_lm.py data-bin/wikitext-103 \
     --path $CHECKPOINT \
     --sample-break-mode complete --max-tokens 3072 \
     --softmax-batch 1024 --gen-subset $SPLIT \
-    --context-window 2560 \
+    --context-window 2560 --no-min-context \
     --dstore-mmap $DSTORE_DIR/dstore --knn-keytype 'last_ffn_input' \
     --dstore-size $DSTORE_SIZE --model-overrides "{'knn_keytype': 'last_ffn_input'}" \
     --save-knnlm-dstore --fp16
@@ -63,5 +64,5 @@ python rq/fast_evaluate.py \
 python rq/fast_evaluate.py \
     --preset wiki_$SPLIT \
     --save-exact \
-    --load-pct 20
+    --load-pct 10
     

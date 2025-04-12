@@ -19,4 +19,4 @@ module load anaconda3_gpu
 
 cd /work/hdd/bcyi/$USER/knnlm-retrieval-quality
 
-python simple_knn_eval_with_bins.py
+python simple_knn_eval.py
