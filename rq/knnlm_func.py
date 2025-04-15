@@ -42,12 +42,26 @@ def run_eval_ppl(context,validation_split=False):
     target = dataset.target
     knns = dataset.knns
     dists = context['dists']
+    #External LM Probabilities
+    ext_lm_prob = context['ext_lm_prob']
+    ext_lm_modified_prob = context['ext_lm_modified_prob'] 
+    ext_weight = context['ext_weight']   
+
 
     # LM perplexity.
     log_progress("get kNN probabilities")
     knn_prob = get_knn_prob(dstore, target, dists, knns).view(-1, 1)
     log_progress("kNN probabilities calculated")
     lm_prob = torch.from_numpy(dataset.prob).float()
+
+    #Fairseq evaluates prob for the first token in dataset which we skip
+    if ext_lm_prob is not None:
+        log_progress("Using external LM probabilities")
+        lm_prob[1:] = ext_lm_prob.unsqueeze(1) 
+    if ext_lm_modified_prob is not None:
+        lm_modified_prob = lm_prob.clone()
+        lm_modified_prob[1:] = ext_lm_modified_prob.unsqueeze(1)
+
     ppl = eval_ppl(lm_prob)
     # kNN-LM perplexity with validation split
     if validation_split:
@@ -78,7 +92,7 @@ def run_eval_ppl(context,validation_split=False):
             # Find bins and coefficients using Dev0
             dev0_min_dist = (-1 * dev0_dists).min(-1)
             dev0_bins = find_bins(dev0_min_dist, b)
-            coeff_list = (np.arange(0, 100) / 100).tolist()
+            coeff_list = [round(x, 2) for x in np.arange(0.05, 1.0, 0.05).tolist()]
             dev0_bin_coeffs = []
             
             # Find optimal coefficients for each bin using Dev0
@@ -99,6 +113,25 @@ def run_eval_ppl(context,validation_split=False):
                         best_bin_ppl, best_coeff = this_ppl, coeff
                 
                 dev0_bin_coeffs.append(best_coeff)
+            # Calculate dev0 perplexity with optimal coefficients
+            dev0_bin_prob = torch.full(dev0_lm_prob.shape, 1, dtype=torch.float)
+
+            # Apply the best coefficients to each bin
+            for i in range(b):
+                mask = dev0_bins == i
+                if not mask.any():
+                    continue
+                    
+                this_knn_prob = dev0_knn_prob[mask]
+                this_lm_prob = dev0_lm_prob[mask]
+                if i < len(dev0_bin_coeffs):  # Safety check
+                    dev0_bin_prob[mask] = combine_knn_and_vocab_probs(
+                        this_knn_prob, this_lm_prob, dev0_bin_coeffs[i])
+
+            # Calculate and print the perplexity for Dev0 with optimal parameters
+            dev0_bin_ppl = eval_ppl(dev0_bin_prob)
+            log_progress(f"Number of buckets: {b}, Dev0 PPL: {dev0_bin_ppl:.4f}")
+
             
             # Apply these coefficients to Dev1 and measure perplexity
             dev1_min_dist = (-1 * dev1_dists).min(-1)
@@ -127,7 +160,7 @@ def run_eval_ppl(context,validation_split=False):
         log_progress(f"Selected optimal number of buckets: {best_b}")
         min_dist = (-1 * dists).min(-1)
         bins = find_bins(min_dist, best_b)
-        coeff_list = (np.arange(0, 100) / 100).tolist()
+        coeff_list = [round(x, 2) for x in np.arange(0.05, 1.0, 0.05).tolist()]
         bin_prob, bin_coeffs = dynamic_combine_knn_and_vocab_probs(knn_prob, lm_prob, bins, coeff_list)
         bin_ppl = eval_ppl(bin_prob)
         
@@ -138,7 +171,7 @@ def run_eval_ppl(context,validation_split=False):
     else:
         # kNN-LM perplexity.
         log_progress("Evaluate coefficients using entire dataset")
-        coeff_list = (np.arange(0, 100) / 100).tolist()
+        coeff_list = [round(x, 2) for x in np.arange(0.05, 1.0, 0.05).tolist()]
         new_ppl_list = []
         for coeff in tqdm(coeff_list, desc='coeff'):
             def fn():
@@ -158,7 +191,7 @@ def run_eval_ppl(context,validation_split=False):
         number_of_bins = 64
         min_dist = (-1 * dists).min(-1)
         bins = find_bins(min_dist, number_of_bins)
-        coeff_list = (np.arange(0, 100) / 100).tolist()
+        coeff_list = [round(x, 2) for x in np.arange(0.05, 1.0, 0.05).tolist()]
         bin_prob, bin_coeffs = dynamic_combine_knn_and_vocab_probs(knn_prob, lm_prob, bins, coeff_list)
         bin_ppl = eval_ppl(bin_prob)
         print("Dynamic interpolation results:")

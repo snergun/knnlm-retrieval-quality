@@ -6,7 +6,7 @@
 #SBATCH --partition=gpuA40x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
-#SBATCH --time=00:20:00
+#SBATCH --time=00:30:00
 #SBATCH --job-name=knnlm_eval_valid
 #SBATCH --output=log/knnlm_eval_valid_%j.out
 
@@ -25,3 +25,5 @@ python rq/fast_evaluate.py \
     --preset wiki_valid \
     --exact \
     --from_cache \
+    --validation_split \
+    --external_lm_prob /u/eergun/pos_lm/misc/ADT_validation_results.pt \

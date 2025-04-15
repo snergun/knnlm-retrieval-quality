@@ -44,6 +44,8 @@ def argument_parser():
                         help='Path to additional evaluation information.')
     parser.add_argument('--eval-external-knns', default=None, type=str,
                         help='If set, then override the kNNs that would have been returned from faiss.')
+    parser.add_argument('--external_lm_prob', default=None, type=str,
+                        help='If set, then use external lm probs')                  
 
     # Algorithm configuration.
     parser.add_argument('--k', default=1024)
@@ -51,7 +53,7 @@ def argument_parser():
                         help='If set, then use the exact distances (these should be cached with --save-exact).')
     parser.add_argument('--from_cache', action='store_true',
                         help='Set if evaluating from cached neighbors, values and probs.')
-    parser.add_argument('--validation-split', action='store_true',
+    parser.add_argument('--validation_split', action='store_true',
                     help='If set, split validation data for two-stage parameter tuning.')
     # Commands.
     parser.add_argument('--save-knns', action='store_true')
@@ -282,9 +284,15 @@ def main(args):
     context['dstore'] = dstore
     context['dataset'] = dataset
     context['dists'] = dists
+    context['ext_lm_prob'] = None
+    if args.external_lm_prob is not None:
+        external_results = torch.load(args.external_lm_prob)
+        context['ext_lm_prob'] = external_results['word_logits']
+        context['ext_lm_modified_prob'] = external_results['modified_logits']
+        context['ext_weight'] = external_results['weight']
 
     log_progress("Running knnlm_func.run_eval_ppl")
-    knnlm_func.run_eval_ppl(context,args.validation_split)
+    knnlm_func.run_eval_ppl(context, args.validation_split)
 
 if __name__ == '__main__':
     args = argument_parser().parse_args()
