@@ -10,7 +10,6 @@ from utils import log_progress, copy_to_tmp
 def eval_ppl(p):
     return 2**(-p.mean()/np.log(2))
 
-
 def get_knn_prob(dstore, target, dists, knns):
     if torch.cuda.is_available():
         device = torch.device('cuda:0')
@@ -29,100 +28,66 @@ def get_knn_prob(dstore, target, dists, knns):
     log_prob = torch.logsumexp(probs + index_mask, dim=-1).cpu()
 
     return log_prob
-def find_optimal_coefficients(knn_prob, lm_prob, lm_modified_prob=None, num_bins=64):
+
+def dynamic_combine(probs, bins, coeffs):
     """
-    Find optimal interpolation coefficients for each bin using the first half of dataset.
-    
     Args:
-        knn_prob: kNN probabilities
-        lm_prob: Language model probabilities
-        lm_modified_prob: Modified language model probabilities (optional)
-        num_bins: Number of bins to divide data into
-    
+        probs: List of probabilities to combine
+        bins: Bin assignments for each token 
+        coeffs: List of coefficients for each bin
     Returns:
-        bin_coeffs: List of optimal coefficients for each bin
-        bin_ppl: Perplexity achieved with optimal coefficients
+        output: Combined probabilities
     """
-    # Calculate minimum distances for binning
-    dists = (-1 * dists).min(-1)  # This needs to be passed in or calculated within function
-    bins = find_bins(dists, num_bins)
-    
-    # Initialize results
-    bin_prob = torch.full(lm_prob.shape, 1, dtype=torch.float)
-    bin_coeffs = []
-    
-    # Process each bin
+    for i in range(len(probs)-1):
+        assert len(probs[0]) == len(probs[i+1]), f"Lengths of probs[0] and probs[{i+1}] do not match"
+
+    num_bins = bins.max().item() + 1
+    # Initialize output probabilities
+    output = torch.full(probs[0].shape, 1, dtype=torch.float)
+    # Apply coefficients to each bin
     for i in range(num_bins):
         mask = bins == i
-        if not mask.any():  # Skip empty bins
-            if lm_modified_prob is not None:
-                bin_coeffs.append((0.33, 0.33, 0.34))  # Default balanced weights for 3-way
-            else:
-                bin_coeffs.append(0.5)  # Default balanced weight for 2-way
+        if not mask.any():
             continue
-            
-        this_knn_prob = knn_prob[mask]
-        this_lm_prob = lm_prob[mask]
-        
-        if lm_modified_prob is not None:
-            # 3-way interpolation
-            this_lm_modified_prob = lm_modified_prob[mask]
-            best_bin_ppl, best_lambdas = np.inf, None
-            
-            # Define grid search space for coefficients
-            lambda_step = 0.1
-            lambda_values = np.arange(0, 1+lambda_step, lambda_step)
-            
-            # Grid search over lambda combinations
-            for lambda1 in lambda_values:
-                for lambda2 in lambda_values:
-                    if lambda1 + lambda2 > 1:
-                        continue  # Skip invalid combinations
-                    
-                    lambda3 = 1 - lambda1 - lambda2
-                    
-                    # Calculate combined probability
-                    this_prob = combine_three_probs(
-                        this_lm_prob, this_knn_prob, this_lm_modified_prob, 
-                        lambda1, lambda2, lambda3
-                    )
-                    
-                    # Evaluate perplexity
-                    this_ppl = eval_ppl(this_prob)
-                    if this_ppl < best_bin_ppl:
-                        best_bin_ppl = this_ppl
-                        best_lambdas = (lambda1, lambda2, lambda3)
-                        
-            bin_coeffs.append(best_lambdas)
-            # Apply optimal coefficients to this bin
-            bin_prob[mask] = combine_three_probs(
-                this_lm_prob, this_knn_prob, this_lm_modified_prob,
-                *best_lambdas
-            )
-        else:
-            # 2-way interpolation
-            coeff_list = [round(x, 2) for x in np.arange(0.05, 1.0, 0.05).tolist()]
-            best_bin_ppl, best_coeff = np.inf, None
-            
-            # Grid search over coefficients
-            for coeff in coeff_list:
-                this_prob = combine_knn_and_vocab_probs(this_knn_prob, this_lm_prob, coeff)
-                this_ppl = eval_ppl(this_prob)
-                if this_ppl < best_bin_ppl:
-                    best_bin_ppl, best_coeff = this_ppl, coeff
-            
-            bin_coeffs.append(best_coeff)
-            # Apply optimal coefficient to this bin
-            bin_prob[mask] = combine_knn_and_vocab_probs(
-                this_knn_prob, this_lm_prob, best_coeff
-            )
-    
-    # Calculate overall perplexity with optimal coefficients
-    bin_ppl = eval_ppl(bin_prob)
-    
-    return bin_coeffs, bin_ppl
+        # Get coefficients and probabilities for this bin
+        bin_probs = [prob[mask] for prob in probs]
+        bin_coeffs = coeffs[i]
+        output[mask] = combine_probs(bin_probs, bin_coeffs)
+    return output
 
-def run_eval_ppl(context, validation_split=False, use_external):
+def combine_probs(probs, coeffs):
+    """
+    Combine three probability distributions with log-domain interpolation
+    probs: list of N probabilities to combine, shape (N, T)
+    coeffs: list of N coefficients for each probability, shape (N,)
+    """
+    assert len(probs) == len(coeffs), "Number of probabilities and coefficients must match"
+    stacked_probs = torch.stack(probs, dim=0)
+    stacked_coeffs = torch.ones_like(stacked_probs)
+
+    for i, coeff in enumerate(coeffs):
+        stacked_coeffs[i] = np.log(coeff) if coeff > 0 else -1e13
+
+    return torch.logsumexp(stacked_probs + stacked_coeffs, dim=0)
+
+def find_bins(measure, number_of_bins):
+    # Assign each entry to a bin based on statistics of the measure.
+    bins = np.full(measure.shape, -1)
+    pct_size = 100 / number_of_bins
+    for i in range(number_of_bins):
+        if i == number_of_bins - 1:
+            pct_start = i * pct_size
+            pct_end = 100
+            pct_mask = np.logical_and(measure >= np.percentile(measure, pct_start), measure <= np.percentile(measure, pct_end))
+        else:
+            pct_start = i * pct_size
+            pct_end = pct_start + pct_size
+            pct_mask = np.logical_and(measure >= np.percentile(measure, pct_start), measure < np.percentile(measure, pct_end))
+        bins[pct_mask] = i
+    assert np.all(bins > -1).item()
+    return bins
+
+def run_eval_ppl(context, validation_split=False):
     # Local variables.
     dstore = context['dstore']
     keys = dstore.keys
@@ -178,16 +143,9 @@ def run_eval_ppl(context, validation_split=False, use_external):
         # Split the data in half
         total_samples = len(target)
         split_point = total_samples // 2
-        # Dev0 - first half for boundary definition and coefficient tuning
-        dev0_probs = (lm_prob[:split_point], knn_prob[:split_point])
-        dev0_probs += (lm_modified_prob[:split_point],) if lm_modified_prob is not None else ()
-        dev0_dists = dists[:split_point]
-        dev0_min_dist = (-1 * dev0_dists).min(-1)
-        # Dev1 - second half for bucket number selection
-        dev1_probs = (lm_prob[split_point:], knn_prob[split_point:])
-        dev1_probs += (lm_modified_prob[split_point:],) if lm_modified_prob is not None else ()
-        dev1_dists = dists[split_point:]
-        dev1_min_dist = (-1 * dev1_dists).min(-1)
+        dev0_probs = [temp[:split_point] for temp in dev_probs]
+        dev1_probs = [temp[split_point:] for temp in dev_probs]
+        dev0_min_dist , dev1_min_dist = dev_min_dist[:split_point], dev_min_dist[split_point:]
 
         for b in bucket_options:
             log_progress(f"Testing with {b} buckets")
@@ -204,14 +162,14 @@ def run_eval_ppl(context, validation_split=False, use_external):
                         dev0_bin_coeffs.append((0.5,0.5))  # Default value for 2-way
                     continue
                 
-                bin_probs = (temp[mask] for temp in dev0_probs)
+                bin_probs = [temp[mask] for temp in dev0_probs]
                 best_bin_ppl, best_coeffs_tuple = np.inf, None
                 for coeffs in lambda_values:
                     combined_bin_probs = combine_probs(bin_probs, coeffs)
                     this_ppl = eval_ppl(combined_bin_probs)
-                        if this_ppl < best_bin_ppl:
-                            best_bin_ppl = this_ppl
-                            best_coeffs_tuple = coeffs  
+                    if this_ppl < best_bin_ppl:
+                        best_bin_ppl = this_ppl
+                        best_coeffs_tuple = coeffs  
                 dev0_bin_coeffs.append(best_coeffs_tuple)
                 
             # Calculate dev0 perplexity with optimal coefficients
@@ -244,14 +202,14 @@ def run_eval_ppl(context, validation_split=False, use_external):
                         dev_bin_coeffs.append((0.5,0.5))  # Default value for 2-way
                     continue
     
-                bin_probs = (temp[mask] for temp in dev_probs)
+                bin_probs = [temp[mask] for temp in dev_probs]
                 best_bin_ppl, best_coeffs_tuple = np.inf, None
                 for coeffs in lambda_values:
                     combined_bin_probs = combine_probs(bin_probs, coeffs)
                     this_ppl = eval_ppl(combined_bin_probs)
-                        if this_ppl < best_bin_ppl:
-                            best_bin_ppl = this_ppl
-                            best_coeffs_tuple = coeffs  
+                    if this_ppl < best_bin_ppl:
+                        best_bin_ppl = this_ppl
+                        best_coeffs_tuple = coeffs  
                 dev_bin_coeffs.append(best_coeffs_tuple)
 
                 dev_combined_probs = dynamic_combine(dev_probs, dev_bins, dev_bin_coeffs)
@@ -272,126 +230,6 @@ def run_eval_ppl(context, validation_split=False, use_external):
     log_progress(f"Number of buckets: {b}, Full Dev PPL: {dev_ppl:.4f}")        
     print(f'Original PPL = {ppl:.4f}')
     print(f'Final PPL = {dev_ppl:.4f} with {best_b} buckets')
-    print(f'Final coefficients: {best_coeffs}')
-
-def dynamic_combine(probs, bins, coeffs):
-    """
-    Args:
-        probs: List of probabilities to combine
-        bins: Bin assignments for each token 
-        coeffs: List of coefficients for each bin
-    Returns:
-        output: Combined probabilities
-    """
-    for i in range(len(probs)-1):
-        assert len(probs[0]) == len(probs[i+1]), f"Lengths of probs[0] and probs[{i+1}] do not match"
-
-    num_bins = bins.max().item() + 1
-    # Initialize output probabilities
-    output = torch.full(probs[0].shape, 1, dtype=torch.float)
-    # Apply coefficients to each bin
-    for i in range(num_bins):
-        mask = bins == i
-        if not mask.any():
-            continue
-        # Get coefficients and probabilities for this bin
-        bin_probs = (prob[mask] for prob in probs)
-        bin_coeffs = coeffs[i]
-        output[mask] = combine_probs(bin_probs, bin_coeffs)
-    return output
-    
-def dynamic_combine_knn_and_vocab_probs(knn_prob, lm_prob, bins, coeff_list):
-    bin_prob = torch.full(lm_prob.shape, 1, dtype=torch.float)
-    bin_coeffs = []
-    number_of_bins = bins.max().item() + 1
-    for i in range(number_of_bins):
-        mask = bins == i
-        this_knn_prob = knn_prob[mask]
-        this_lm_prob = lm_prob[mask]
-        best_ppl, best_coeff = np.inf, None
-        for coeff in coeff_list:
-            this_prob = combine_knn_and_vocab_probs(this_knn_prob, this_lm_prob, coeff)
-            this_ppl = eval_ppl(this_prob)
-            if this_ppl < best_ppl:
-                best_ppl, best_coeff = this_ppl, coeff
-        assert best_coeff is not None
-        bin_coeffs.append(best_coeff)
-        bin_prob[mask] = combine_knn_and_vocab_probs(this_knn_prob, this_lm_prob, best_coeff)
-    assert (bin_prob < 1).all().item()
-    return bin_prob, bin_coeffs
-
-def combine_probs(probs, coeffs):
-    """
-    Combine three probability distributions with log-domain interpolation
-    probs: list of N probabilities to combine, shape (N, T)
-    coeffs: list of N coefficients for each probability, shape (N,)
-    """
-    assert len(probs) == len(coeffs), "Number of probabilities and coefficients must match"
-    stacked_probs = torch.stack(probs, dim=0)
-    stacked_coeffs = torch.ones_like(combine_probs)
-
-    for coeff in coeffs:
-        stacked_coeffs[i] = np.log(coeff) if coeff > 0 else -1e13
-
-    return torch.logsumexp(combine_probs + coeffs, dim=0)
-
-def dynamic_combine_three_probs(lm_prob, knn_prob, modified_lm_prob, bins, lambda_values):
-    """
-    Find optimal lambda weights for each bin when combining three probability distributions
-    
-    This function assumes modified_lm_prob is not None
-    """
-    bin_prob = torch.full(lm_prob.shape, 1, dtype=torch.float)
-    bin_coeffs = []
-    number_of_bins = bins.max().item() + 1
-    
-    for i in range(number_of_bins):
-        mask = bins == i
-        this_lm_prob = lm_prob[mask]
-        this_knn_prob = knn_prob[mask]
-        this_modified_lm_prob = modified_lm_prob[mask]
-        best_ppl, best_lambdas = np.inf, None
-        
-        # Grid search over lambda combinations
-        for lambda1 in lambda_values:
-            for lambda2 in lambda_values:
-                if lambda1 + lambda2 > 1:
-                    continue  # Skip invalid combinations
-                
-                lambda3 = 1 - lambda1 - lambda2
-                this_prob = combine_three_probs(
-                    this_lm_prob, this_knn_prob, this_modified_lm_prob,
-                    lambda1, lambda2, lambda3
-                )
-                this_ppl = eval_ppl(this_prob)
-                
-                if this_ppl < best_ppl:
-                    best_ppl = this_ppl
-                    best_lambdas = (lambda1, lambda2, lambda3)
-        
-        assert best_lambdas is not None
-        bin_coeffs.append(best_lambdas)
-        bin_prob[mask] = combine_three_probs(
-            this_lm_prob, this_knn_prob, this_modified_lm_prob,
-            *best_lambdas
-        )
-    
-    assert (bin_prob < 1).all().item()
-    return bin_prob, bin_coeffs
-def find_bins(measure, number_of_bins):
-    # Assign each entry to a bin based on statistics of the measure.
-    bins = np.full(measure.shape, -1)
-    pct_size = 100 / number_of_bins
-    for i in range(number_of_bins):
-        if i == number_of_bins - 1:
-            pct_start = i * pct_size
-            pct_end = 100
-            pct_mask = np.logical_and(measure >= np.percentile(measure, pct_start), measure <= np.percentile(measure, pct_end))
-        else:
-            pct_start = i * pct_size
-            pct_end = pct_start + pct_size
-            pct_mask = np.logical_and(measure >= np.percentile(measure, pct_start), measure < np.percentile(measure, pct_end))
-        bins[pct_mask] = i
-    assert np.all(bins > -1).item()
-    return bins
-
+    rounded_coeffs = [[round(c, 2) for c in coeff] for coeff in best_coeffs]
+    print(f'Final coefficients: {rounded_coeffs}')
+    return best_coeffs, dev_ppl, best_b, ppl    
