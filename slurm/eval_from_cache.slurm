@@ -26,4 +26,4 @@ python rq/fast_evaluate.py \
     --exact \
     --from_cache \
     --validation_split \
-    --external_lm_prob /u/eergun/pos_lm/misc/ADT_validation_results.pt \
+    # --external_lm_prob /u/eergun/pos_lm/misc/ADT_validation_results.pt \

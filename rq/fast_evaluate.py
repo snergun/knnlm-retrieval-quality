@@ -284,7 +284,6 @@ def main(args):
     context['dstore'] = dstore
     context['dataset'] = dataset
     context['dists'] = dists
-    context['ext_lm_prob'] = None
     if args.external_lm_prob is not None:
         external_results = torch.load(args.external_lm_prob)
         context['ext_lm_prob'] = external_results['word_logits']
