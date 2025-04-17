@@ -131,6 +131,7 @@ data-bin/
 # Experimental Folder
 experimental/*
 
+# ------MINE------
 # DATA
 data/*
 data-bin/*
@@ -142,3 +143,6 @@ adaptive_lm_wiki103.v2/
 
 #Logs
 log/
+
+# Model Checkpoints and Results
+models/

@@ -3,10 +3,10 @@ import os
 # import faiss
 import numpy as np
 import torch
+from torch.utils.data import Dataset as TorchDataset
 import time
 
 import shutil
-
 from utils import log_progress, copy_to_tmp
 
 class Dataset(object):
@@ -128,3 +128,20 @@ class Dstore(object):
         dists, knns = self.index.search(query, k)
         return dists, knns
 
+# Dataset class for training the combiner
+class ProbDataset(TorchDataset):
+    def __init__(self, features, probs, targets):
+        """
+        features: Input features for the model (query embeddings or other features)
+        probs: List of probability distributions [lm_probs, knn_probs, pos_modified_probs]
+        targets: Target tokens for calculating loss
+        """
+        self.features = features
+        self.probs = probs
+        self.targets = targets
+
+    def __len__(self):
+        return len(self.features)
+    
+    def __getitem__(self, idx):
+        return self.features[idx], [p[idx] for p in self.probs], self.targets[idx]
