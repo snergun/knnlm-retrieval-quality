@@ -20,7 +20,6 @@ def get_knn_prob(dstore, target, dists, knns):
     
     d = torch.from_numpy(dists).to(device).float()
     probs = torch.log_softmax(d, -1)
-    log_progress(f"kNN probs calculated")
     index_mask = torch.eq(torch.from_numpy(dstore.vals[knns]).to(device).long().squeeze(-1), torch.from_numpy(target).to(device).long()).float()
     index_mask[index_mask == 0] = -10000 # for stability
     index_mask[index_mask == 1] = 0
@@ -102,7 +101,6 @@ def run_eval_ppl(context, validation_split=False):
     ext_lm_modified_prob = context.get('ext_lm_modified_prob')
     ext_weight = context.get('ext_weight')
     # LM perplexity.
-    log_progress("get kNN probabilities")
     knn_prob = get_knn_prob(dstore, target, dists, knns).view(-1, 1)
     log_progress("kNN probabilities calculated")
     lm_prob = torch.from_numpy(dataset.prob).float()

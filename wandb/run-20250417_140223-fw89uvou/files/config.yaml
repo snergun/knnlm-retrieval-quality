@@ -1,0 +1,51 @@
+_wandb:
+    value:
+        cli_version: 0.18.5
+        m: []
+        python_version: 3.9.18
+        t:
+            "1":
+                - 1
+                - 55
+            "2":
+                - 1
+                - 11
+                - 49
+                - 55
+            "3":
+                - 13
+                - 16
+                - 23
+                - 55
+            "4": 3.9.18
+            "5": 0.18.5
+            "8":
+                - 5
+            "12": 0.18.5
+            "13": linux-x86_64
+args:
+    value:
+        batch_size: 1024
+        dropout_rate: 0.2
+        dstore: datastore/wikitext-103/train
+        dstore_knn_index: datastore/wikitext-103/train/knn.index
+        dstore_size: 103225485
+        epochs: 50
+        eval_dstore: datastore/wikitext-103/valid
+        eval_dstore_cache: datastore/wikitext-103/valid.cache
+        eval_dstore_size: 217646
+        eval_external_knns: false
+        external_lm_prob: /u/eergun/pos_lm/misc/ADT_validation_results.pt
+        from_cache: true
+        hidden_dim: 8
+        input_dropout_rate: 0.1
+        lr: 0.01
+        pos_prob: /u/eergun/pos_lm/misc/ADTPOS_validation_results.pt
+        preset: wiki_valid
+        save_path: models/prob_combiner.pt
+        task: train_combiner
+        use_wandb: true
+        validation_split: 0.1
+        vocab: data-bin/wikitext-103/dict.txt
+task:
+    value: train_combiner

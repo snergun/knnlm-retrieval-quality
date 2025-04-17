@@ -6,9 +6,9 @@
 #SBATCH --partition=gpuA40x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
-#SBATCH --time=02:00:00
-#SBATCH --job-name=train_combiner
-#SBATCH --output=log/train_combiner_%j.out
+#SBATCH --time=00:10:00
+#SBATCH --job-name=eval_combiner
+#SBATCH --output=log/eval_combiner_%j.out
 
 # Load modules and activate environment
 unset PYTHONPATH
@@ -21,10 +21,7 @@ module load anaconda3_gpu
 
 cd /work/hdd/bcyi/$USER/knnlm-retrieval-quality
 
-python rq/train_combiner.py \
-    --preset wiki_valid \
+python rq/eval_combiner.py \
+    --preset wiki_test \
     --from_cache \
-    --batch_size 1024 \
-    --epochs 50 \
-    --hidden_dim 8 \
     --use_wandb \

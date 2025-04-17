@@ -60,15 +60,3 @@ def set_presets(args):
 
     args.dstore_knn_index = f'{args.dstore}/knn.index'
 
-def setup_wandb(args):
-    if args.use_wandb:
-        wandb_config = {
-            'args': vars(args),
-        }
-        wandb.init(
-            project=args.wandb_project,
-            entity=args.wandb_entity,
-            name=args.wandb_name,
-            config=wandb_config
-        )
-        log_progress("Initialized wandb logging")

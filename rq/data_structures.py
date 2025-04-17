@@ -20,7 +20,6 @@ class Dataset(object):
         self.target = copy_to_tmp(f'{path}/dstore_vals.npy', dtype=np.int64, shape=(dstore_size, 1))
         #This needs to be loaded float32 if dstore is float32
         self.prob = copy_to_tmp(f'{path}/dstore_prob.npy', dtype=np.float32, shape=(dstore_size, 1))
-        log_progress("Dataset loaded with data from /tmp")
         for k in ['query', 'target', 'prob']:
             v = getattr(self, k)
             new_v = np.ones(v.shape, dtype=v.dtype)
@@ -40,7 +39,6 @@ class Dataset(object):
             #self.dists = np.memmap(f'{path}/dstore_cache_dists.npy', dtype=np.float32, mode='r', shape=(dstore_size, 1024))
             self.dists = np.ones(dtype=np.float32, shape=(dstore_size, 1024))
             self.knns = copy_to_tmp(args.eval_external_knns, dtype=np.int32, shape=(dstore_size, 1024))
-        log_progress("Cache loaded from /tmp")
 
     def load_exact_dists(self):
         args = self.args
@@ -52,7 +50,6 @@ class Dataset(object):
             filename = f'{args.eval_external_knns}.exact_dists.npy'
         assert os.path.exists(filename)
         self.exact_dists = copy_to_tmp(filename, dtype=np.float32, shape=(dstore_size, 1024))
-        log_progress("Exact distances loaded from /tmp")
 
 
 class Dstore(object):
@@ -74,16 +71,12 @@ class Dstore(object):
         if not args.from_cache:
             #Don't need to load keys if evaluating from cache
             if not os.path.exists(tmp_keys_path):
-                log_progress(f"Copying {keys_path} to {tmp_keys_path}")
                 shutil.copy2(keys_path, tmp_keys_path)
-            else:
-                log_progress(f"File already exists: {tmp_keys_path}")
+
             
         if not os.path.exists(tmp_vals_path):
-            log_progress(f"Copying {vals_path} to {tmp_vals_path}")
             shutil.copy2(vals_path, tmp_vals_path)
         else:
-            log_progress(f"File already exists: {tmp_vals_path}")
         #Don't use tmp for datastore keys if not needed.
         if args.from_cache:
             self.keys = np.memmap(keys_path, dtype=np.float32, mode='r', shape=(dstore_size, 1024))
@@ -97,10 +90,8 @@ class Dstore(object):
         tmp_index_path = os.path.join(tmp_path, os.path.basename(index_path))
         
         if not os.path.exists(tmp_index_path):
-            log_progress(f"Copying {index_path} to {tmp_index_path}")
             shutil.copy2(index_path, tmp_index_path)
         else:
-            log_progress(f"File already exists: {tmp_index_path}")
         #Comment this out to run with anaconda3_cpu, if index is not needed
         if not args.from_cache:
             #Load index if not evaluating from cache
