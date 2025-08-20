@@ -18,6 +18,6 @@ source activate knnlm
 
 python export_tokens.py \
     --data-dir data-bin/wikitext-103 \
-    --split test \
+    --split train \
     --output-dir data/wikitext-103-preprocessed \
     --format torch

@@ -1,0 +1,99 @@
+{
+  "os":  "Linux-4.18.0-477.86.1.el8_8.x86_64-x86_64-with-glibc2.28",
+  "python":  "3.9.18",
+  "startedAt":  "2025-04-17T20:36:18.694186Z",
+  "args":  [
+    "--preset",
+    "wiki_valid",
+    "--from_cache",
+    "--use_wandb",
+    "--hidden_dim",
+    "16",
+    "--batch_size",
+    "512",
+    "--epochs",
+    "50",
+    "--checkpoint_dir",
+    "checkpoints/h16_b512_0417_153614"
+  ],
+  "program":  "/work/hdd/bcyi/eergun/knnlm-retrieval-quality/rq/train_combiner.py",
+  "codePath":  "rq/train_combiner.py",
+  "git":  {
+    "remote":  "https://github.com/snergun/knnlm-retrieval-quality.git",
+    "commit":  "4cff33ccdadfef53f273d80616cca3f46fd97321"
+  },
+  "email":  "eergun@ucsd.edu",
+  "root":  "/work/hdd/bcyi/eergun/knnlm-retrieval-quality",
+  "host":  "gpua084.delta.ncsa.illinois.edu",
+  "username":  "eergun",
+  "executable":  "/sw/external/python/anaconda3_gpu/bin/python",
+  "codePathLocal":  "rq/train_combiner.py",
+  "cpu_count":  64,
+  "cpu_count_logical":  64,
+  "gpu":  "NVIDIA A100-SXM4-40GB",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "135087435776",
+      "used":  "12429373440"
+    }
+  },
+  "memory":  {
+    "total":  "270174871552"
+  },
+  "cpu":  {
+    "count":  64,
+    "countLogical":  64
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA A100-SXM4-40GB",
+      "memoryTotal":  "42949672960",
+      "cudaCores":  6912,
+      "architecture":  "Ampere"
+    }
+  ],
+  "slurm":  {
+    "cluster_name":  "delta",
+    "conf":  "/var/spool/slurmd/conf-cache/slurm.conf",
+    "cpus_on_node":  "2",
+    "cpus_per_task":  "2",
+    "gpus":  "1",
+    "gpus_on_node":  "1",
+    "gtids":  "0",
+    "job_account":  "bcyi-delta-gpu",
+    "job_cpus_per_node":  "2",
+    "job_end_time":  "1744935242",
+    "job_gid":  "202",
+    "job_gpus":  "0",
+    "job_id":  "9188218",
+    "job_name":  "wandb_sweep",
+    "job_nodelist":  "gpua084",
+    "job_num_nodes":  "1",
+    "job_partition":  "gpuA100x4",
+    "job_qos":  "bcyi-delta-gpu",
+    "job_start_time":  "1744920842",
+    "job_uid":  "73288",
+    "job_user":  "eergun",
+    "jobid":  "9188218",
+    "localid":  "0",
+    "mem_per_node":  "8192",
+    "mpi_type":  "pmi2",
+    "nnodes":  "1",
+    "nodeid":  "0",
+    "nodelist":  "gpua084",
+    "nprocs":  "1",
+    "ntasks":  "1",
+    "ntasks_per_node":  "1",
+    "prio_process":  "0",
+    "procid":  "0",
+    "submit_dir":  "/work/hdd/bcyi/eergun/knnlm-retrieval-quality",
+    "submit_host":  "dt-login02.delta.ncsa.illinois.edu",
+    "task_pid":  "2229293",
+    "tasks_per_node":  "1",
+    "topology_addr":  "ss00.ss08.gpua084",
+    "topology_addr_pattern":  "switch.switch.node",
+    "tres_per_task":  "cpu:2"
+  },
+  "cudaVersion":  "12.4"
+}

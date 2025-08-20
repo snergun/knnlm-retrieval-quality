@@ -132,8 +132,9 @@ def main():
             entity="ucsd-alon",
             name=f"{time.strftime('%m%d_%H%M%S')}",
             config= {"args": vars(args),
-                    "task": args.task},
-                    "model_config": model_config, 
+                    "task": args.task,
+                    "model_config": model_config
+                    },
             settings=wandb.Settings(code_dir="rq/"), # save source code in current directory
         )
         wandb.run.log_code()

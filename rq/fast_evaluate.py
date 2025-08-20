@@ -25,6 +25,7 @@ from tqdm import tqdm
 from data_structures import Dataset, Dstore
 from vocab import Dictionary
 import knnlm_func
+from knnlm_func import get_knn_prob
 log_progress("Imports completed")
 
 
@@ -58,6 +59,7 @@ def argument_parser():
     # Commands.
     parser.add_argument('--save-knns', action='store_true')
     parser.add_argument('--save-exact', action='store_true')
+    parser.add_argument('--save-knn-prob', action='store_true')
 
     # Preset configuration.
     parser.add_argument('--preset', default=None, type=str,
@@ -82,6 +84,7 @@ def set_presets(args):
         args.eval_dstore = 'datastore/wikitext-103/valid'
         args.eval_dstore_cache = 'datastore/wikitext-103/valid.cache'
         args.eval_dstore_size = 217646
+        args.coeffs = None
 
     if args.preset == 'wiki_test':
         args.vocab = 'data-bin/wikitext-103/dict.txt'
@@ -90,6 +93,7 @@ def set_presets(args):
         args.eval_dstore = 'datastore/wikitext-103/test'
         args.eval_dstore_cache = 'datastore/wikitext-103/test.cache'
         args.eval_dstore_size = 245569
+        args.coeffs = 'rq/results/coefficients.json'
 
     if args.preset == 'ptb_valid':
         args.vocab = 'data-bin/ptb/dict.txt'
@@ -284,15 +288,40 @@ def main(args):
     context['dstore'] = dstore
     context['dataset'] = dataset
     context['dists'] = dists
+    context['split'] = os.path.basename(args.eval_dstore)
+    
+    # Save knn probs 
+    if args.save_knn_prob:
+        knn_log_prob = get_knn_prob(dstore, dataset.target, dists, dataset.knns).view(-1, 1).numpy()
+        log_progress("Saving kNN target probabilities")
+        save_path = os.path.join(args.eval_dstore_cache, "knn_prob.npy")
+        knn_log_prob_memmap = np.memmap(save_path, dtype='float32', mode='w+', shape=knn_log_prob.shape)
+        knn_log_prob_memmap[:] = knn_log_prob
+        del knn_log_prob_memmap
+
     if args.external_lm_prob is not None:
         external_results = torch.load(args.external_lm_prob)
         context['ext_lm_prob'] = external_results['word_logits']
         context['ext_lm_modified_prob'] = external_results['modified_logits']
         context['ext_weight'] = external_results['weight']
-
-    log_progress("Running knnlm_func.run_eval_ppl")
-    knnlm_func.run_eval_ppl(context, args.validation_split)
-
+    if args.coeffs is not None:
+        # Evaluate using the coefficients from results
+        with open(args.coeffs, 'r') as f:
+            result = json.load(f)
+        best_coeffs = result['coeffs']
+        print(f"Evaluating using coeffs: {best_coeffs}")
+        context['coeffs'] = best_coeffs
+        knnlm_func.run_eval_ppl(context, args.validation_split)     
+    else:   
+        log_progress("Running knnlm_func.run_eval_ppl")
+        b, coeffs = knnlm_func.run_eval_ppl(context, args.validation_split)
+        # Save b and coeffs to a JSON file
+        os.makedirs("rq/results", exist_ok=True)
+        output_path = os.path.join("rq/results", 'coefficients.json')
+        
+        with open(output_path, 'w') as f:
+            json.dump({'coeffs': coeffs}, f)
+        log_progress(f"Saved coefficients to {output_path}")
 if __name__ == '__main__':
     args = argument_parser().parse_args()
 

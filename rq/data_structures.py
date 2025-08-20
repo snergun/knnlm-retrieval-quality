@@ -76,8 +76,7 @@ class Dstore(object):
             
         if not os.path.exists(tmp_vals_path):
             shutil.copy2(vals_path, tmp_vals_path)
-        else:
-        #Don't use tmp for datastore keys if not needed.
+
         if args.from_cache:
             self.keys = np.memmap(keys_path, dtype=np.float32, mode='r', shape=(dstore_size, 1024))
         else:
@@ -91,8 +90,7 @@ class Dstore(object):
         
         if not os.path.exists(tmp_index_path):
             shutil.copy2(index_path, tmp_index_path)
-        else:
-        #Comment this out to run with anaconda3_cpu, if index is not needed
+
         if not args.from_cache:
             #Load index if not evaluating from cache
             import faiss

@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader, random_split
 import argparse
 import time
 from tqdm import tqdm
-
+import wandb 
 # Import Models
 from models import ProbCombiner, PerplexityLoss
 # Import utils
@@ -141,6 +141,10 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, device, a
                 'val_loss': best_val_loss,
                 'model_config': model_config,
             }, save_path)
+            if args.use_wandb:
+                artifact = wandb.Artifact(f"model-{wandb.run.id}", type="model")
+                artifact.add_file(save_path)
+                wandb.log_artifact(artifact)
             
     log_progress(f"Training completed! Best validation loss: {best_val_loss:.6f}")
     return model
@@ -197,11 +201,22 @@ def main():
             entity="ucsd-alon",
             name=f"{time.strftime('%m%d_%H%M%S')}",
             config= {"args": vars(args),
-                    "task": args.task},  
+                    "task": args.task,
+                    "hidden_dim": args.hidden_dim,
+                    "batch_size": args.batch_size,
+                    "epochs": args.epochs,
+                    "lr": args.lr,
+                    "dropout_rate": args.dropout_rate,
+                    "input_dropout_rate": args.input_dropout_rate,
+                    },  
             settings=wandb.Settings(code_dir="rq/"), # save source code in current directory
         )
         wandb.run.log_code()
-
+    if args.use_wandb and "WANDB_RUN_ID" in os.environ:
+        # Override checkpoint directory with wandb run ID if running in a sweep
+        run_id = os.environ["WANDB_RUN_ID"]
+        if not args.checkpoint_dir.startswith(f"checkpoints/sweep_{run_id}"):
+            args.checkpoint_dir = f"checkpoints/sweep_{run_id}_h{args.hidden_dim}_b{args.batch_size}"
 
     # Load data
     features, probs, targets, device = load_data(args)
