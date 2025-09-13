@@ -3,7 +3,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
-#SBATCH --partition=gpuA40x4
+#SBATCH --partition=gpuA100x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
 #SBATCH --time=2:00:00
@@ -14,7 +14,7 @@
 module purge
 module reset
 module load anaconda3_gpu
-source activate knnlm
+source activate knnlm-retr
 
 cd /work/hdd/bcyi/$USER/knnlm-retrieval-quality
 CHECKPOINTPATH=checkpoints/wt103_checkpoint_best.pt
