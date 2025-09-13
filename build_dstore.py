@@ -19,8 +19,7 @@ parser.add_argument('--faiss_index', type=str, help='file to write the faiss ind
 parser.add_argument('--num_keys_to_add_at_a_time', default=1000000, type=int,
                     help='can only load a certain amount of data to memory at a time.')
 parser.add_argument('--starting_point', type=int, help='index to start adding keys at')
-parser.add_argument('--metric', type=str, default='l2', help='distance metric of choice, l2 or ip')
-
+parser.add_argument('--metric', type=str, default='l2', help='distance metric of choice, l2, ip or cos', choices=['l2', 'ip', 'cos'])
 args = parser.parse_args()
 print("Arguments:")
 print(args)
@@ -61,7 +60,7 @@ if ngpus > 0:
     index = faiss.GpuIndexIVFPQ(
         res, args.dimension,
         args.ncentroids, args.code_size, 8,  # 8 = nbits
-        faiss.METRIC_INNER_PRODUCT if args.metric == 'ip' else faiss.METRIC_L2,
+        faiss.METRIC_L2 if args.metric == 'l2' else faiss.METRIC_INNER_PRODUCT, # use inner product for cos
         co
     )
 else:
@@ -78,6 +77,8 @@ random_sample.sort()
 # Faiss does not handle adding keys in fp16 as of writing this.
 print("Reading index", flush=True)
 x = keys[random_sample].astype(np.float32)
+if args.metric == "cos":
+    faiss.normalize_L2(x)
 print(f'reading indexing took {time.time() - start} seconds')
 print("Training now", flush=True)
 start = time.time()
@@ -111,9 +112,11 @@ while start_pt < args.dstore_size:
     end = min(args.dstore_size, start_pt+args.num_keys_to_add_at_a_time)
     print(f"Adding keys {start_pt} to {end}")
     start_time = time.time()
-    to_add = keys[start_pt:end].copy()
+    to_add = keys[start_pt:end].copy().astype(np.float32)
+    if args.metric == "cos":
+        faiss.normalize_L2(to_add)
     print('Reading keys took {} s'.format(time.time() - start_time))
-    index.add_with_ids(to_add.astype(np.float32), np.arange(start_pt, end))
+    index.add_with_ids(to_add, np.arange(start_pt, end))
     start_pt += args.num_keys_to_add_at_a_time
 
     if (start_pt % args.write_interval) == 0:

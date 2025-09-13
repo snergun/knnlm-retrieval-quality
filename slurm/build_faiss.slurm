@@ -3,11 +3,11 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=30G
-#SBATCH --partition=gpuA100x4
+#SBATCH --partition=gpuA40x4
 #SBATCH --gpus=1
 #SBATCH --account=bcyi-delta-gpu
-#SBATCH --time=24:00:00
-#SBATCH --job-name=faiss_l2
+#SBATCH --time=12:00:00
+#SBATCH --job-name=cos
 #SBATCH --output=log/knnlm_build_faiss_%j.out
 #SBATCH --error=log/knnlm_build_faiss_%j.err
 
@@ -26,8 +26,8 @@ python -u build_dstore.py \
     --dstore_mmap $DSTORE_DIR/dstore \
     --dstore_size $DSTORE_SIZE \
     --dimension 1024 \
-    --faiss_index $DSTORE_DIR/knn_l2.index \
-    --num_keys_to_add_at_a_time 500000 \
+    --faiss_index $DSTORE_DIR/knn_cos.index \
+    --num_keys_to_add_at_a_time 1000000 \
     --starting_point 0 \
-    --metric l2 \
+    --metric cos \
     --dstore_fp16 \
