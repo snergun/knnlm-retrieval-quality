@@ -826,7 +826,8 @@ class TransformerDecoder(FairseqIncrementalDecoder):
 
         if self.knn_keytype == 'last_ffn_input':
             return x, {'attn': [attn], 'inner_states': inner_states, self.knn_keytype: knn_emb}
-
+        elif self.knn_keytype == 'decoder_out':
+            return x, {'attn': [attn], 'inner_states': inner_states, self.knn_keytype: x.transpose(0, 1)}
         return x, {"attn": [attn], "inner_states": inner_states}
 
     def output_layer(self, features):

@@ -17,7 +17,7 @@ module reset
 module load anaconda3_gpu
 source activate knnlm-retr
 
-DSTORE_DIR=/work/nvme/bcyi/eergun/datastore
+DSTORE_DIR=/work/nvme/bcyi/eergun/datastore/decoder_out
 # Create directories for datastores
 mkdir -p $DSTORE_DIR
 
@@ -31,6 +31,6 @@ python eval_lm.py data-bin/wikitext-103 \
     --sample-break-mode none --max-tokens 3072 \
     --softmax-batch 1024 --gen-subset train \
     --context-window 1536 --tokens-per-sample 1536 \
-    --dstore-mmap $DSTORE_DIR/dstore --knn-keytype 'last_ffn_input' \
-    --dstore-size $DSTORE_SIZE --model-overrides "{'knn_keytype': 'last_ffn_input'}" \
+    --dstore-mmap $DSTORE_DIR/dstore --knn-keytype 'decoder_out' \
+    --dstore-size $DSTORE_SIZE --model-overrides "{'knn_keytype': 'decoder_out'}" \
     --save-knnlm-dstore --fp16 --dstore-fp16

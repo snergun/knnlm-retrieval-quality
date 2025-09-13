@@ -39,62 +39,17 @@ madvise.argtypes = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_int]
 madvise.restype = ctypes.c_int
 assert madvise(keys.ctypes.data, keys.size * keys.dtype.itemsize, 1) == 0, "MADVISE FAILED" # 2 means MADV_SEQUENTIAL
 
-if not os.path.exists(args.faiss_index+f".trained"):
-    # Initialize faiss index
-    # quantizer = faiss.IndexFlatL2(args.dimension)
-    # index = faiss.IndexIVFPQ(quantizer, args.dimension,
-    #     args.ncentroids, args.code_size, 8)
-    # metric = faiss.METRIC_L2 if args.metric == 'l2' else faiss.METRIC_INNER_PRODUCT
-    # quantizer = faiss.IndexFlatL2(args.dimension) if args.metric == 'l2' else faiss.IndexFlatIP(args.dimension)
-    # index = faiss.IndexIVFPQ(quantizer, args.dimension,
-    #                         args.ncentroids, args.code_size, 8, metric)
-    # index.nprobe = args.probe
-    # Try moving to GPU
-    ngpus = faiss.get_num_gpus()
-    print("Number of GPUs detected by Faiss:", ngpus)
-    if ngpus > 0:
-        print("Moving index to GPU")
-        res = faiss.StandardGpuResources()
-        co = faiss.GpuIndexIVFPQConfig()
-        co.device = 0
-        co.useFloat16LookupTables = True   # saves shared memory
-        index = faiss.GpuIndexIVFPQ(
-            res, args.dimension,
-            args.ncentroids, args.code_size, 8,  # 8 = nbits
-            faiss.METRIC_INNER_PRODUCT if args.metric == 'ip' else faiss.METRIC_L2,
-            co
-        )
-    else:
-        raise Exception("FAISS GPU not found")
-
-    index.nprobe = args.probe
-    print("Index type:", type(index))
-    print('Training Index')
-    np.random.seed(args.seed)
-    start = time.time()
-    random_sample = np.random.choice(np.arange(vals.shape[0]), size=[min(1000000, vals.shape[0])], replace=False)
-    # ensure sequential reading
-    random_sample.sort()
-    # Faiss does not handle adding keys in fp16 as of writing this.
-    print("Reading index", flush=True)
-    x = keys[random_sample].astype(np.float32)
-    print(f'reading indexing took {time.time() - start} seconds')
-    print("Training now", flush=True)
-    start = time.time()
-    index.train(x)
-    print('Training took {} s'.format(time.time() - start))
-    print('Writing index after training')
-    start = time.time()
-    print("Converting to CPU")
-    cpu_index = faiss.index_gpu_to_cpu(index)
-    print("Converting to CPU took {} s".format(time.time() - start))
-    print("Writing index")
-    start = time.time()
-    faiss.write_index(cpu_index, args.faiss_index+f".trained")
-    print('Writing index took {} s'.format(time.time()-start))
-
-print('Adding Keys')
-index = faiss.read_index(args.faiss_index+f".trained")
+# if not os.path.exists(args.faiss_index+f".trained"):
+# Initialize faiss index
+# quantizer = faiss.IndexFlatL2(args.dimension)
+# index = faiss.IndexIVFPQ(quantizer, args.dimension,
+#     args.ncentroids, args.code_size, 8)
+# metric = faiss.METRIC_L2 if args.metric == 'l2' else faiss.METRIC_INNER_PRODUCT
+# quantizer = faiss.IndexFlatL2(args.dimension) if args.metric == 'l2' else faiss.IndexFlatIP(args.dimension)
+# index = faiss.IndexIVFPQ(quantizer, args.dimension,
+#                         args.ncentroids, args.code_size, 8, metric)
+# index.nprobe = args.probe
+# Try moving to GPU
 ngpus = faiss.get_num_gpus()
 print("Number of GPUs detected by Faiss:", ngpus)
 if ngpus > 0:
@@ -103,38 +58,79 @@ if ngpus > 0:
     co = faiss.GpuIndexIVFPQConfig()
     co.device = 0
     co.useFloat16LookupTables = True   # saves shared memory
-    gpu_index = faiss.GpuIndexIVFPQ(
-        res, index.d,
-        index.nlist, index.code_size, 8,  # 8 = nbits
+    index = faiss.GpuIndexIVFPQ(
+        res, args.dimension,
+        args.ncentroids, args.code_size, 8,  # 8 = nbits
         faiss.METRIC_INNER_PRODUCT if args.metric == 'ip' else faiss.METRIC_L2,
         co
     )
-    
-start = args.starting_point
-while start < args.dstore_size:
-    end = min(args.dstore_size, start+args.num_keys_to_add_at_a_time)
-    print(f"Adding keys {start} to {end}")
-    start_time = time.time()
-    to_add = keys[start:end].copy()
-    print('Reading keys took {} s'.format(time.time() - start_time))
-    gpu_index.add_with_ids(to_add.astype(np.float32), np.arange(start, end))
-    start += args.num_keys_to_add_at_a_time
+else:
+    raise Exception("FAISS GPU not found")
 
-    if (start % args.write_interval) == 0:
-        print('Added %d tokens so far' % start)
+index.nprobe = args.probe
+print("Index type:", type(index))
+print('Training Index')
+np.random.seed(args.seed)
+start = time.time()
+random_sample = np.random.choice(np.arange(vals.shape[0]), size=[min(1000000, vals.shape[0])], replace=False)
+# ensure sequential reading
+random_sample.sort()
+# Faiss does not handle adding keys in fp16 as of writing this.
+print("Reading index", flush=True)
+x = keys[random_sample].astype(np.float32)
+print(f'reading indexing took {time.time() - start} seconds')
+print("Training now", flush=True)
+start = time.time()
+index.train(x)
+print('Training took {} s'.format(time.time() - start))
+print('Writing index after training')
+start = time.time()
+print("Converting to CPU")
+cpu_index = faiss.index_gpu_to_cpu(index)
+print("Converting to CPU took {} s".format(time.time() - start))
+print("Writing index")
+start = time.time()
+faiss.write_index(cpu_index, args.faiss_index+f".trained")
+print('Writing index took {} s'.format(time.time()-start))
+
+print('Adding Keys')
+# index = faiss.read_index(args.faiss_index+f".trained")
+# ngpus = faiss.get_num_gpus()
+# print("Number of GPUs detected by Faiss:", ngpus)
+# if ngpus > 0:
+#     print("Moving index to GPU")
+#     res = faiss.StandardGpuResources()
+#     co = faiss.GpuClonerOptions()
+#     co.device = 0
+#     co.useFloat16LookupTables = True   # saves shared memory
+#     co.useFloat16 = True
+#     index = faiss.index_cpu_to_gpu(res, 0, index, co)
+#     print("Index type:", type(index))
+start_pt = args.starting_point
+while start_pt < args.dstore_size:
+    end = min(args.dstore_size, start_pt+args.num_keys_to_add_at_a_time)
+    print(f"Adding keys {start_pt} to {end}")
+    start_time = time.time()
+    to_add = keys[start_pt:end].copy()
+    print('Reading keys took {} s'.format(time.time() - start_time))
+    index.add_with_ids(to_add.astype(np.float32), np.arange(start_pt, end))
+    start_pt += args.num_keys_to_add_at_a_time
+
+    if (start_pt % args.write_interval) == 0:
+        print('Added %d tokens so far' % start_pt)
         start = time.time()
-        index = faiss.index_gpu_to_cpu(gpu_index)
+        cpu_index = faiss.index_gpu_to_cpu(index)
         print("Converting to CPU took {} s".format(time.time() - start))
         start = time.time()
-        faiss.write_index(index, args.faiss_index)
+        faiss.write_index(cpu_index, args.faiss_index)
         print('Writing index took {} s'.format(time.time()-start))
 
 print("Adding total %d keys" % start)
 print('Adding took {} s'.format(time.time() - start_time))
 print('Writing Index')
 start = time.time()
-index = faiss.index_gpu_to_cpu(gpu_index)
+cpu_index = faiss.index_gpu_to_cpu(index)
 print("Converting to CPU took {} s".format(time.time() - start))
 start = time.time() 
-faiss.write_index(index, args.faiss_index)
+faiss.write_index(cpu_index, args.faiss_index)
 print('Writing index took {} s'.format(time.time()-start))

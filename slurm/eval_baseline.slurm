@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem=64G
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16G
 #SBATCH --partition=gpuA100x4
 #SBATCH --account=bcyi-delta-gpu
 #SBATCH --gpus=1
-#SBATCH --time=2:00:00
+#SBATCH --time=00:15:00
 #SBATCH --job-name=eval_baseline_val
 #SBATCH --output=log/eval_baseline_%j.out
 
