@@ -1,134 +1,172 @@
 import argparse
+import os
 import numpy as np
 import faiss
 import time
+import ctypes
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--faiss_index', type=str, required=True, help='path to the trained faiss index')
+parser.add_argument('--valid_mmap', type=str, help='memmap for validation keys')
+parser.add_argument('--test_mmap', type=str, help='memmap for test keys')
+parser.add_argument('--valid_size', type=int, help='number of validation items')
+parser.add_argument('--test_size', type=int, help='number of test items')
 parser.add_argument('--dimension', type=int, default=1024, help='Size of each key')
 parser.add_argument('--ncentroids', type=int, default=4096, help='number of centroids (must match trained index)')
 parser.add_argument('--code_size', type=int, default=64, help='size of quantized vectors (must match trained index)')
+parser.add_argument('--dstore_fp16', default=False, action='store_true')
+parser.add_argument('--k', type=int, default=1024, help='number of nearest neighbors to retrieve')
 parser.add_argument('--probe', type=int, default=8, help='number of clusters to query')
+parser.add_argument('--batch_size', type=int, default=1024, help='batch size for processing queries')
 parser.add_argument('--metric', type=str, default='l2', help='distance metric used', choices=['l2', 'ip', 'cos'])
-parser.add_argument('--n_test_queries', type=int, default=100, help='number of test queries to generate')
-parser.add_argument('--k', type=int, default=10, help='number of nearest neighbors for test')
+parser.add_argument('--output_dir', type=str, default='.', help='directory to save cached results')
+
 
 args = parser.parse_args()
-print("Test Arguments:")
+print("Arguments:")
 print(args)
 
-def create_test_queries(n_queries, dimension, metric):
-    """Create random test queries"""
-    queries = np.random.randn(n_queries, dimension).astype(np.float32)
-    if metric == "cos":
-        faiss.normalize_L2(queries)
-    return queries
+# Memory mapping optimization
+def optimize_memmap(memmap_array):
+    """Apply memory advice for sequential access"""
+    madvise = ctypes.CDLL("libc.so.6").madvise
+    madvise.argtypes = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_int]
+    madvise.restype = ctypes.c_int
+    assert madvise(memmap_array.ctypes.data, memmap_array.size * memmap_array.dtype.itemsize, 1) == 0, "MADVISE FAILED"
 
-def test_search_performance(index, queries, k, name):
-    """Test search performance and return results"""
-    print(f"\n--- Testing {name} ---")
-    print(f"Index type: {type(index)}")
-    print(f"Index ntotal: {index.ntotal}")
-    print(f"Index nprobe: {index.nprobe}")
+def load_memmap_keys(mmap_path, size, dimension, fp16=False):
+    """Load memory mapped keys"""
+    dtype = np.float16 if fp16 else np.float32
+    keys = np.memmap(mmap_path + '_keys.npy', dtype=dtype, mode='r', shape=(size, dimension))
+    optimize_memmap(keys)
+    return keys
+
+def search_and_save_knns(index, query_keys, output_prefix, k, batch_size, metric):
+    """Search for KNNs and save results"""
+    n_queries = query_keys.shape[0]
     
-    # Warm up
-    index.search(queries[:10], k)
+    # Pre-allocate arrays for results
+    all_distances = np.zeros((n_queries, k), dtype=np.float32)
+    all_indices = np.zeros((n_queries, k), dtype=np.int64)
     
-    # Actual test
+    print(f"Processing {n_queries} queries in batches of {batch_size}")
     start_time = time.time()
-    distances, indices = index.search(queries, k)
-    search_time = time.time() - start_time
     
-    print(f"Search time: {search_time:.4f}s ({len(queries)/search_time:.1f} queries/sec)")
-    print(f"Result shape: {distances.shape}")
-    print(f"Sample distances (first query): {distances[0][:5]}")
-    print(f"Sample indices (first query): {indices[0][:5]}")
+    for i in range(0, n_queries, batch_size):
+        batch_start = time.time()
+        end_idx = min(i + batch_size, n_queries)
+        batch_queries = query_keys[i:end_idx].copy().astype(np.float32)
+        
+        # Normalize for cosine similarity
+        if metric == "cos":
+            faiss.normalize_L2(batch_queries)
+        
+        # Search
+        distances, indices = index.search(batch_queries, k)
+        
+        # Store results
+        all_distances[i:end_idx] = distances
+        all_indices[i:end_idx] = indices
+        
+        if (i // batch_size + 1) % 4 == 0:
+            batch_time = time.time() - batch_start
+            avg_time = (time.time() - start_time) / (i // batch_size + 1)
+            remaining_batches = (n_queries - end_idx) // batch_size
+            eta = remaining_batches * avg_time
+            print(f"Processed batch {i//batch_size + 1}/{(n_queries-1)//batch_size + 1} "
+                  f"({end_idx}/{n_queries} queries) in {batch_time:.2f}s, ETA: {eta:.1f}s")
     
-    return distances, indices, search_time
+    total_time = time.time() - start_time
+    print(f"Total search time: {total_time:.2f}s ({n_queries/total_time:.1f} queries/sec)")
+    
+    # Save results
 
-# Load CPU index
-print("Loading CPU FAISS index...")
+    knn_file = os.path.join(output_prefix, f"knns_{metric}.npy")
+    print(f"Saving KNN indices to {knn_file}")
+    np.save(knn_file, all_indices)
+    
+    dist_file = os.path.join(output_prefix, f"dist_{metric}.npy")
+    print(f"Saving distances to {dist_file}")
+    np.save(dist_file, all_distances)
+    
+    return all_distances, all_indices
+
+# Load the trained FAISS index
+print("Loading FAISS index...")
 start = time.time()
 cpu_index = faiss.read_index(args.faiss_index)
-print(f"Loading took {time.time() - start:.4f}s")
-print(f"CPU index contains {cpu_index.ntotal} vectors")
+print(f"Loading index took {time.time() - start:.2f}s")
+print(f"Index contains {cpu_index.ntotal} vectors")
 
 # Set probe parameter
 cpu_index.nprobe = args.probe
+print(f"Set nprobe to {args.probe}")
 
-# Create test queries
-print(f"\nGenerating {args.n_test_queries} random test queries...")
-test_queries = create_test_queries(args.n_test_queries, args.dimension, args.metric)
-
-# Test CPU performance
-cpu_distances, cpu_indices, cpu_time = test_search_performance(cpu_index, test_queries, args.k, "CPU Index")
-
-# Check GPU availability
+# Try to move index to GPU if available
 ngpus = faiss.get_num_gpus()
-print(f"\nNumber of GPUs detected: {ngpus}")
-
-if ngpus == 0:
-    print("No GPU available, test completed.")
-    exit(0)
-
-# Try to create and copy to GPU index
-try:
-    print("\n=== Attempting GPU Transfer ===")
+print("Number of GPUs detected by Faiss:", ngpus)
+if ngpus > 0:
+    print("Moving index to GPU...")
     start = time.time()
-    
-    # Initialize GPU index with proper configuration
     res = faiss.StandardGpuResources()
     co = faiss.GpuIndexIVFPQConfig()
     co.device = 0
     co.useFloat16LookupTables = True
-    
-    print("Creating GPU index with configuration:")
-    print(f"  Dimension: {args.dimension}")
-    print(f"  Centroids: {args.ncentroids}")
-    print(f"  Code size: {args.code_size}")
-    print(f"  Metric: {args.metric}")
-    print(f"  useFloat16LookupTables: {co.useFloat16LookupTables}")
-    
     gpu_index = faiss.GpuIndexIVFPQ(
         res, args.dimension,
         args.ncentroids, args.code_size, 8,  # 8 = nbits
         faiss.METRIC_L2 if args.metric == 'l2' else faiss.METRIC_INNER_PRODUCT,
         co
     )
-    
+
     print("Copying trained parameters from CPU to GPU...")
     gpu_index.copyFrom(cpu_index)
     gpu_index.nprobe = args.probe
     
     transfer_time = time.time() - start
     print(f"GPU transfer completed in {transfer_time:.4f}s")
-    
-    # Test GPU performance
-    gpu_distances, gpu_indices, gpu_time = test_search_performance(gpu_index, test_queries, args.k, "GPU Index")
-    
-    # Compare results
-    print(f"\n=== Performance Comparison ===")
-    print(f"CPU time: {cpu_time:.4f}s ({args.n_test_queries/cpu_time:.1f} queries/sec)")
-    print(f"GPU time: {gpu_time:.4f}s ({args.n_test_queries/gpu_time:.1f} queries/sec)")
-    print(f"Speedup: {cpu_time/gpu_time:.2f}x")
-    
-    # Verify results are similar (allowing for small numerical differences)
-    distance_diff = np.abs(cpu_distances - gpu_distances).max()
-    indices_match = np.mean(cpu_indices == gpu_indices)
-    
-    print(f"\n=== Result Verification ===")
-    print(f"Max distance difference: {distance_diff:.6f}")
-    print(f"Index match rate: {indices_match:.3f}")
-    
-    if distance_diff < 1e-4 and indices_match > 0.95:
-        print("✅ GPU transfer successful! Results match CPU within tolerance.")
-    else:
-        print("⚠️  Large differences detected between CPU and GPU results.")
-        print("This might indicate an issue with the GPU transfer.")
-    
-except Exception as e:
-    print(f"❌ GPU transfer failed with error: {e}")
-    import traceback
-    traceback.print_exc()
+    index = gpu_index
+else:
+    index = cpu_index
+    print("No GPU available, using CPU index")
 
-print("\nTest completed!")
+print("Index type:", type(index))
+
+# Process validation set if provided
+if args.valid_mmap and args.valid_size:
+    print("\nProcessing validation set...")
+    valid_keys = load_memmap_keys(args.valid_mmap, args.valid_size, args.dimension, args.dstore_fp16)
+    output_prefix = os.path.join(args.output_dir, "valid.cache")
+    
+    valid_distances, valid_knns = search_and_save_knns(
+        index, valid_keys, output_prefix, args.k, args.batch_size, args.metric
+    )
+    print(f"Validation set processed: {valid_knns.shape}")
+
+# Process test set if provided
+if args.test_mmap and args.test_size:
+    print("\nProcessing test set...")
+    test_keys = load_memmap_keys(args.test_mmap, args.test_size, args.dimension, args.dstore_fp16)
+    output_prefix = os.path.join(args.output_dir, "test.cache")
+    
+    test_distances, test_knns = search_and_save_knns(
+        index, test_keys, output_prefix, args.k, args.batch_size, args.metric
+    )
+    print(f"Test set processed: {test_knns.shape}")
+
+print("\nKNN caching completed!")
+
+# Print some statistics
+if args.valid_mmap and args.valid_size:
+    print(f"\nValidation set statistics:")
+    print(f"  Shape: {valid_knns.shape}")
+    print(f"  Mean distance: {valid_distances.mean():.4f}")
+    print(f"  Min distance: {valid_distances.min():.4f}")
+    print(f"  Max distance: {valid_distances.max():.4f}")
+
+if args.test_mmap and args.test_size:
+    print(f"\nTest set statistics:")
+    print(f"  Shape: {test_knns.shape}")
+    print(f"  Mean distance: {test_distances.mean():.4f}")
+    print(f"  Min distance: {test_distances.min():.4f}")
+    print(f"  Max distance: {test_distances.max():.4f}")
