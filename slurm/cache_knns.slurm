@@ -22,6 +22,9 @@ for METRIC in ip l2; do
         elif [ "$KNN_KEYTYPE" == "decoder_out" ]; then
             BASE_PATH="/work/nvme/bcyi/eergun/datastore/decoder_out"
         else
+            echo "Invalid KNN_KEYTYPE: $KNN_KEYTYPE. Must be 'last_ffn_input' or 'decoder_out'."
+            exit 1
+        fi
         # Base paths
         TRAIN_PATH="${BASE_PATH}/train"
         INDEX_PATH="${TRAIN_PATH}/knn_${METRIC}.index"
